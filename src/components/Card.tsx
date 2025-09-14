@@ -20,7 +20,7 @@ card: {
     borderColor: Colors.light.border,
     borderWidth: 1,
     borderRadius: 20,
-    padding: 50, 
+    padding: 36, 
 },
 });
 

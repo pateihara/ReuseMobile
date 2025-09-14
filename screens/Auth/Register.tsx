@@ -7,22 +7,38 @@ import Button from '../../src/components/Button';
 import Card from '../../src/components/Card';
 import Header from '../../src/components/Header';
 import { Colors } from '../../src/constants/theme';
+import { useAuth } from '../../context/AuthContext';
+
 
 type RegisterScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Register'>;
 
 const Register: React.FC = () => {
     const navigation = useNavigation<RegisterScreenNavigationProp>();
-
+    
+    const { login } = useAuth();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [acceptedTerms, setAcceptedTerms] = useState(false);
 
     const handleRegister = () => {
-        console.log('Nome:', name, 'Email:', email, 'Senha:', password, 'Aceitou termos:', acceptedTerms);
-        // Navegar para a tela principal após registro
-        navigation.navigate('MainApp', { screen: 'Home' });
+    if (!name || !email || !password || !acceptedTerms) {
+        return alert('Preencha todos os campos e aceite os termos');
+    }
+
+    // Simula registro de usuário
+    const newUser = {
+        id: String(Date.now()),
+        name,
+        email,
     };
+
+    login(newUser) // já registra e loga o usuário
+        .then(() => {
+        navigation.navigate('MainApp', { screen: 'Home' });
+        })
+        .catch(err => console.error(err));
+};
 
     const handleRegisterWithGoogle = () => {
         // Lógica de registro com Google

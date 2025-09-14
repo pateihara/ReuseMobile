@@ -7,19 +7,35 @@ import Button from '../../src/components/Button';
 import Card from '../../src/components/Card';
 import Header from '../../src/components/Header';
 import { Colors } from '../../src/constants/theme';
+import { useAuth } from '../../context/AuthContext';
+
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 const Login: React.FC = () => {
     const navigation = useNavigation<LoginScreenNavigationProp>();
-
+    
+    const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const handleLogin = () => {
-        console.log('Email:', email, 'Senha:', password);
-        navigation.navigate('MainApp', { screen: 'Home' });
+    if (!email || !password) return alert('Preencha todos os campos');
+
+    // Aqui você poderia chamar uma API para validar usuário
+    const fakeUser = {
+        id: '1',
+        name: 'Usuário Teste',
+        email: email,
     };
+
+    login(fakeUser) // atualiza o contexto
+        .then(() => {
+        // navega para tela principal após login
+        navigation.navigate('MainApp', { screen: 'Profile' });
+        })
+        .catch(err => console.error(err));
+};
 
     const handleLoginWithGoogle = () => {
         // Lógica de login com Google
