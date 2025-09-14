@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 
 const Favorite = () => (
 <View style={styles.container}>
-    <Text>Chat</Text>
+    <Text>Favoritos</Text>
 </View>
 );
 

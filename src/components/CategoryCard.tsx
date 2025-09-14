@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { Colors } from '../constants/theme';
 
 interface CategoryCardProps {
 title: string;
@@ -21,7 +22,7 @@ return (
 const styles = StyleSheet.create({
 container: {
     alignItems: 'center',
-    marginHorizontal: 8,
+    marginRight: 16,
 },
 circle: {
     width: 60,
@@ -34,7 +35,7 @@ circle: {
 title: {
     fontSize: 14,
     textAlign: 'center',
-    color: '#333',
+    color: Colors.light.textPrimary,
 },
 });
 

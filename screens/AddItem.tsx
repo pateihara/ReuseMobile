@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 
 const AddItem = () => (
 <View style={styles.container}>
-    <Text>Chat</Text>
+    <Text>Adicionar item</Text>
 </View>
 );
 
