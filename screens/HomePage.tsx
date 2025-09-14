@@ -1,22 +1,184 @@
-import Button from "../src/components/Button";
-import Input from "../src/components/Input";
-import Card from "../src/components/Card";
-import SearchInput from "../src/components/SearchInput";
-import Header from "../src/components/Header";
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView, Dimensions, ImageBackground } from 'react-native';
+import Carousel from '../src/components/Carousel';
+import Header from '../src/components/Header';
+import { Colors } from '../src/constants/theme';
+import ProductCard from '../src/components/ProductCard';
+import Button from '../src/components/Button';
+import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons } from '@expo/vector-icons';
+import CategoryCard from '../src/components/CategoryCard';
 
-const HomePage = () => {
+// importa o tipo para garantir status correto
+import type { ProductCardProps } from '../src/components/ProductCard';
+
+const { width } = Dimensions.get('window');
+
+const HomePage: React.FC = () => {
+const navigation = useNavigation<any>();
+
+// Em Alta
+const productsEmAlta: ProductCardProps[] = [...Array(6)].map((_, i) => ({
+    title: `Produto ${i + 1}`,
+    image: 'https://via.placeholder.com/150', // URL de teste
+    description: 'Breve descrição do produto.',
+    status:
+    i % 4 === 0
+        ? 'disponivel'
+        : i % 4 === 1
+        ? 'negociacao'
+        : i % 4 === 2
+        ? 'efetuada'
+        : 'indisponivel',
+}));
+
+// Perto de você
+const produtosPerto: ProductCardProps[] = [...Array(4)].map((_, i) => ({
+    title: `Produto ${i + 1}`,
+    image: 'https://via.placeholder.com/150',
+    description: 'Breve descrição do produto.',
+    status: 'disponivel',
+}));
+
+const categories = [
+    { title: 'Eletrônicos', icon: <MaterialIcons name="devices" size={24} color="#fff" /> },
+    { title: 'Roupas', icon: <MaterialIcons name="checkroom" size={24} color="#fff" /> },
+    { title: 'Livros', icon: <MaterialIcons name="menu-book" size={24} color="#fff" /> },
+    { title: 'Móveis', icon: <MaterialIcons name="weekend" size={24} color="#fff" /> },
+    { title: 'Brinquedos', icon: <MaterialIcons name="toys" size={24} color="#fff" /> },
+];
+
 return (
-    <Card>
-    <Header type="home" onSearch={(text) => console.log(text)} />
-    <Input
-        label="Nome"
-        description="Digite seu nome completo"
-        value=""
-        onChangeText={(text) => console.log(text)}
-        placeholder="Seu nome"
-    />
-    <Button title="Enviar" onPress={() => console.log("Botão pressionado")} />
-    </Card>
+    <View style={styles.container}>
+    {/* Header */}
+    <Header type="home" />
+
+    <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
+        {/* Carrossel */}
+        <Carousel
+        images={[
+            require('../src/assets/banner-1.jpg'),
+            require('../src/assets/banner-2.jpg'),
+            require('../src/assets/banner-3.jpg'),
+        ]}
+        />
+
+        {/* Em Alta */}
+        <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Em alta</Text>
+        <Text style={styles.sectionSubtitle}>Dê uma nova vida aos seus objetos</Text>
+        <View style={styles.grid}>
+            {productsEmAlta.map((product, i) => (
+            <ProductCard
+                key={i}
+                title={product.title}
+                image={product.image}
+                description={product.description}
+                status={product.status}
+            />
+            ))}
+        </View>
+        </View>
+
+        {/* Perto de você */}
+        <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Perto de você</Text>
+        <Text style={styles.sectionSubtitle}>Encontre o que precisa na sua vizinhança</Text>
+        <View style={styles.grid}>
+            {produtosPerto.map((product, i) => (
+            <ProductCard
+                key={i}
+                title={product.title}
+                image={product.image}
+                description={product.description}
+                status={product.status}
+            />
+            ))}
+        </View>
+        </View>
+
+        {/* Estatísticas + CTA */}
+        <View style={styles.statsBox}>
+        <View style={{ flex: 1, borderRadius: 8, overflow: 'hidden' }}>
+            <ImageBackground
+            source={require('../src/assets/background-stats.jpg')}
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16 }}
+            resizeMode="cover"
+            >
+            <Text style={styles.statsText}>Já são +3.000 itens trocados pela comunidade!</Text>
+            <Button
+                title="Publique um item"
+                onPress={() => navigation.navigate('ProfileNotLoggedIn')}
+                variant="primary"
+            />
+            </ImageBackground>
+        </View>
+        </View>
+
+        {/* Categorias */}
+        <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Categorias</Text>
+        <Text style={styles.sectionSubtitle}>Procure o que precisa por categorias</Text>
+
+        <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 16 }}
+        >
+            {categories.map((cat, i) => (
+            <CategoryCard
+                key={i}
+                title={cat.title}
+                icon={cat.icon}
+                backgroundColor={Colors.light.secondary}
+            />
+            ))}
+        </ScrollView>
+        </View>
+    </ScrollView>
+    </View>
 );
-}
+};
+
+const styles = StyleSheet.create({
+container: {
+    flex: 1,
+    backgroundColor: Colors.light.backgroundPrimary,
+},
+section: {
+    paddingHorizontal: 16,
+    marginBottom: 24,
+},
+sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.light.textPrimary,
+},
+sectionSubtitle: {
+    fontSize: 14,
+    color: Colors.light.textSecondary,
+    marginBottom: 12,
+},
+grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+},
+statsBox: {
+    marginHorizontal: 16,
+    marginBottom: 24,
+    borderRadius: 8,
+    overflow: 'hidden',
+    minHeight: 250,
+},
+statsText: {
+    fontSize: 24,
+    lineHeight: 30,
+    color: Colors.light.backgroundPrimary,
+    fontWeight: '700',
+    marginBottom: 20,
+    textAlign: 'center',
+},
+});
+
 export default HomePage;

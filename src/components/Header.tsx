@@ -64,11 +64,20 @@ const renderPageHeader = () => (
 );
 
 const renderLogoHeader = () => (
+    <>
+    <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Ionicons
+        name="arrow-back-outline"
+        size={24}
+        color={Colors.light.backgroundSecondary}
+        />
+    </TouchableOpacity>
     <Image
     source={logoSource || require('../assets/logo-login.png')}
     style={styles.logo}
     resizeMode="contain"
     />
+    </>
 );
 
 return (

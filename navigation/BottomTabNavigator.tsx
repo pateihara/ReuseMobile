@@ -48,7 +48,7 @@ return (
     >
     <Tab.Screen name="Home" component={HomePage} options={{ title: 'Início' }} />
     <Tab.Screen name="Favorites" component={Favorites} options={{ title: 'Favoritos' }} />
-    <Tab.Screen name="AddItem" component={AddItem} options={{ title: 'Adicionar' }} />
+    <Tab.Screen name="AddItem" component={AddItem} options={{ title: 'Item' }} />
     <Tab.Screen name="Chat" component={Chat} options={{ title: 'Chat' }} />
     <Tab.Screen name="Profile" component={Profile} options={{ title: 'Perfil' }} />
     </Tab.Navigator>
