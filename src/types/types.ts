@@ -1,6 +1,5 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 
-// Tipagem para as telas do seu Bottom Tab Navigator
 export type BottomTabParamList = {
   Home: undefined;
   Favorites: undefined;
@@ -9,8 +8,10 @@ export type BottomTabParamList = {
   Profile: undefined;
 };
 
-// Tipagem para o seu Stack Navigator
 export type RootStackParamList = {
   Login: undefined;
+  Register: undefined; 
+  ProfileNotLoggedIn: undefined;
+  ForgotPassword: undefined;
   MainApp: NavigatorScreenParams<BottomTabParamList>;
 };

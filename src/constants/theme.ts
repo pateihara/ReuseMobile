@@ -5,6 +5,9 @@ light: {
     // Neutros
     backgroundPrimary: '#F5F5F5',
     backgroundSecondary: '#FFFFFF',
+    backgroundSuccess: '#D1FAE5',
+    backgroundError: '#FEE2E2',
+    backgroundAttention: '#FFFBEB',
     border: '#E5E7EB',
     textPrimary: '#111827',
     textSecondary: '#6B7280',
@@ -20,6 +23,9 @@ dark: {
     // Neutros
     backgroundPrimary: '#121212',
     backgroundSecondary: '#1E1E1E',
+    backgroundSuccess: '#064E3B',
+    backgroundError: '#7F1D1D',
+    backgroundAttention: '#78350F',
     border: '#333333',
     textPrimary: '#E0E0E0',
     textSecondary: '#A0A0A0',
@@ -32,6 +38,7 @@ dark: {
     attention: '#FBBF24',
 },
 };
+
 
 export const Fonts = Platform.select({
 ios: {
