@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../constants/theme';
+import { Colors } from '../src/constants/theme';
 
 import HomePage from '../screens/HomePage';
 import Favorites from '../screens/Favorites';

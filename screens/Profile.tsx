@@ -1,13 +1,22 @@
-import { View, Text, StyleSheet } from 'react-native';
+import React from 'react';
+import { ActivityIndicator, View } from 'react-native';
+import { useAuth } from '../context/AuthContext';
+import ProfileLoggedInScreen from './Auth/ProfileLoggedInScreen';
+import ProfileNotLoggedInScreen from './Auth/ProfileNotLoggedInScreen';
+import { Colors } from '../src/constants/theme';
 
-const Profile = () => (
-<View style={styles.container}>
-    <Text>Chat</Text>
-</View>
+const ProfileScreen: React.FC = () => {
+const { user, isLoading } = useAuth();
+
+if (isLoading) {
+return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <ActivityIndicator size="large" color={Colors.light.primary} />
+    </View>
 );
+}
 
-const styles = StyleSheet.create({
-container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-});
+return user ? <ProfileLoggedInScreen /> : <ProfileNotLoggedInScreen />;
+};
 
-export default Profile;
+export default ProfileScreen;

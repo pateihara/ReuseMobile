@@ -1,8 +1,8 @@
-import Button from "../components/Button";
-import Input from "../components/Input";
-import Card from "../components/Card";
-import SearchInput from "../components/SearchInput";
-import Header from "../components/Header";
+import Button from "../src/components/Button";
+import Input from "../src/components/Input";
+import Card from "../src/components/Card";
+import SearchInput from "../src/components/SearchInput";
+import Header from "../src/components/Header";
 
 const HomePage = () => {
 return (
