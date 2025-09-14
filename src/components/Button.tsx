@@ -1,19 +1,21 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ViewStyle } from 'react-native';
 import { Colors, Fonts } from '../constants/theme';
 
 interface ButtonProps {
     title: string;
     onPress: () => void;
     disabled?: boolean;
-    variant?: 'primary' | 'secondary'; // Novo prop para diferenciar tipos
+    variant?: 'primary' | 'secondary';
+    style?: ViewStyle; // Novo prop para diferenciar tipos
 }
 
-const Button: React.FC<ButtonProps> = ({ title, onPress, disabled = false, variant = 'primary' }) => {
+const Button: React.FC<ButtonProps> = ({ title, onPress, disabled = false, variant = 'primary', style }) => {
     const buttonStyles = [
         styles.button,
         variant === 'primary' ? styles.primaryButton : styles.secondaryButton,
         disabled && styles.disabledButton,
+        style,
     ];
 
     const textStyles = [

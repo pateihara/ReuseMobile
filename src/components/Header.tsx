@@ -53,7 +53,7 @@ const renderPageHeader = () => (
     <>
     <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons
-        name="arrow-back-outline"
+        name="chevron-back"
         size={24}
         color={Colors.light.backgroundSecondary}
         />
@@ -67,7 +67,7 @@ const renderLogoHeader = () => (
     <>
     <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons
-        name="arrow-back-outline"
+        name="chevron-back"
         size={24}
         color={Colors.light.backgroundSecondary}
         />
@@ -109,7 +109,8 @@ searchContainer: {
     marginRight: 15,
 },
 pageTitle: {
-    fontSize: 18,
+    fontSize: 20,
+    marginLeft: 10,
     fontWeight: 'bold',
     color: Colors.light.backgroundSecondary,
     flex: 1,
