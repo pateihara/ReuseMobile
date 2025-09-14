@@ -13,7 +13,7 @@ return (
     <TextInput
         style={styles.input}
         placeholderTextColor={Colors.light.textSecondary}
-        placeholder="Buscar..."
+        placeholder="Buscar na ReUse..."
         {...props}
     />
     </View>
