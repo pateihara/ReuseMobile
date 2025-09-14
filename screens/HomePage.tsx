@@ -17,11 +17,14 @@ const { width } = Dimensions.get('window');
 const HomePage: React.FC = () => {
 const navigation = useNavigation<any>();
 
+const cardWidth = (width - 48) / 2; // 16px padding em cada lado + 16px gap entre cards
+
 // Em Alta
 const productsEmAlta: ProductCardProps[] = [...Array(6)].map((_, i) => ({
     title: `Produto ${i + 1}`,
-    image: 'https://via.placeholder.com/150', // URL de teste
+    image: 'https://media.istockphoto.com/id/1308599972/pt/vetorial/goods-returnable-icon-return-parcel-sign-vector-logo-template.jpg?s=170667a&w=0&k=20&c=dRQwosZycTDbBFHZ3Ec0ARFrKS0dcBgXcZ2PKV3x-RA=',
     description: 'Breve descrição do produto.',
+    onPress: () => navigation.navigate('Item'),
     status:
     i % 4 === 0
         ? 'disponivel'
@@ -35,8 +38,9 @@ const productsEmAlta: ProductCardProps[] = [...Array(6)].map((_, i) => ({
 // Perto de você
 const produtosPerto: ProductCardProps[] = [...Array(4)].map((_, i) => ({
     title: `Produto ${i + 1}`,
-    image: 'https://via.placeholder.com/150',
+    image: 'https://media.istockphoto.com/id/1308599972/pt/vetorial/goods-returnable-icon-return-parcel-sign-vector-logo-template.jpg?s=170667a&w=0&k=20&c=dRQwosZycTDbBFHZ3Ec0ARFrKS0dcBgXcZ2PKV3x-RA=',
     description: 'Breve descrição do produto.',
+    onPress: () => navigation.navigate('Item'),
     status: 'disponivel',
 }));
 
@@ -50,11 +54,9 @@ const categories = [
 
 return (
     <View style={styles.container}>
-    {/* Header */}
     <Header type="home" />
 
     <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
-        {/* Carrossel */}
         <Carousel
         images={[
             require('../src/assets/banner-1.jpg'),
@@ -74,7 +76,9 @@ return (
                 title={product.title}
                 image={product.image}
                 description={product.description}
+                onPress={product.onPress}
                 status={product.status}
+                style={{ width: cardWidth }}
             />
             ))}
         </View>
@@ -91,7 +95,9 @@ return (
                 title={product.title}
                 image={product.image}
                 description={product.description}
+                onPress={product.onPress}
                 status={product.status}
+                style={{ width: cardWidth }}
             />
             ))}
         </View>
@@ -162,7 +168,8 @@ sectionSubtitle: {
 grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    gap: 12, // espaçamento entre cards
 },
 statsBox: {
     marginHorizontal: 16,
