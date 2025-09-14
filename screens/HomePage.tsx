@@ -84,6 +84,27 @@ return (
         </View>
         </View>
 
+        {/* Categorias */}
+        <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Categorias</Text>
+        <Text style={styles.sectionSubtitle}>Procure o que precisa por categorias</Text>
+
+        <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 16 }}
+        >
+            {categories.map((cat, i) => (
+            <CategoryCard
+                key={i}
+                title={cat.title}
+                icon={cat.icon}
+                backgroundColor={Colors.light.secondary}
+            />
+            ))}
+        </ScrollView>
+        </View>
+
         {/* Perto de você */}
         <View style={styles.section}>
         <Text style={styles.sectionTitle}>Perto de você</Text>
@@ -120,31 +141,10 @@ return (
             </ImageBackground>
         </View>
         </View>
-
-        {/* Categorias */}
-        <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Categorias</Text>
-        <Text style={styles.sectionSubtitle}>Procure o que precisa por categorias</Text>
-
-        <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 16 }}
-        >
-            {categories.map((cat, i) => (
-            <CategoryCard
-                key={i}
-                title={cat.title}
-                icon={cat.icon}
-                backgroundColor={Colors.light.secondary}
-            />
-            ))}
-        </ScrollView>
-        </View>
     </ScrollView>
     </View>
 );
-};
+}
 
 const styles = StyleSheet.create({
 container: {

@@ -35,7 +35,7 @@ const Register: React.FC = () => {
 
     login(newUser) // já registra e loga o usuário
         .then(() => {
-        navigation.navigate('MainApp', { screen: 'Home' });
+        navigation.navigate('MainApp', { screen: 'Profile' });
         })
         .catch(err => console.error(err));
 };
