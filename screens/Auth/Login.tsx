@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../src/types/RootStackParamList';
@@ -9,33 +9,25 @@ import Header from '../../src/components/Header';
 import { Colors } from '../../src/constants/theme';
 import { useAuth } from '../../context/AuthContext';
 
-
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 const Login: React.FC = () => {
     const navigation = useNavigation<LoginScreenNavigationProp>();
-    
     const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = () => {
-    if (!email || !password) return alert('Preencha todos os campos');
+    const handleLogin = async () => {
+        const error = await login(email, password);
 
-    // Aqui você poderia chamar uma API para validar usuário
-    const fakeUser = {
-        id: '1',
-        name: 'Usuário Teste',
-        email: email,
+        if (error) {
+            Alert.alert("Erro de login", error);
+            return;
+        }
+
+        // se login for bem-sucedido, redireciona para perfil logado
+        navigation.navigate("Profile");
     };
-
-    login(fakeUser) // atualiza o contexto
-        .then(() => {
-        // navega para tela principal após login
-        navigation.navigate('MainApp', { screen: 'Profile' });
-        })
-        .catch(err => console.error(err));
-};
 
     const handleLoginWithGoogle = () => {
         // Lógica de login com Google
@@ -92,7 +84,7 @@ const Login: React.FC = () => {
                         </TouchableOpacity>
 
                         <View style={{ height: 1, backgroundColor: '#CCC', marginVertical: 16 }} />
-                        
+
                         {/* Login social (Secondary) */}
                         <View style={styles.socialContainer}>
                             <Button title="Entrar com Google" onPress={handleLoginWithGoogle} variant="secondary" />

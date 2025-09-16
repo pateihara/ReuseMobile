@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground, TextInput, TouchableOpacity, Switch } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TextInput, TouchableOpacity, Switch, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../src/types/RootStackParamList';
@@ -9,36 +9,42 @@ import Header from '../../src/components/Header';
 import { Colors } from '../../src/constants/theme';
 import { useAuth } from '../../context/AuthContext';
 
-
 type RegisterScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Register'>;
 
 const Register: React.FC = () => {
     const navigation = useNavigation<RegisterScreenNavigationProp>();
-    
-    const { login } = useAuth();
+    const { register } = useAuth(); // supondo que você tenha um método register no AuthContext
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [acceptedTerms, setAcceptedTerms] = useState(false);
 
-    const handleRegister = () => {
-    if (!name || !email || !password || !acceptedTerms) {
-        return alert('Preencha todos os campos e aceite os termos');
-    }
+    const handleRegister = async () => {
+        if (!name || !email || !password || !acceptedTerms) {
+            Alert.alert('Erro', 'Preencha todos os campos e aceite os termos');
+            return;
+        }
 
-    // Simula registro de usuário
-    const newUser = {
-        id: String(Date.now()),
-        name,
-        email,
+        // validações básicas
+        if (!email.includes('@')) {
+            Alert.alert('Erro', 'Digite um email válido');
+            return;
+        }
+
+        if (password.length < 7) {
+            Alert.alert('Erro', 'A senha deve ter no mínimo 7 caracteres');
+            return;
+        }
+
+        // chamada ao contexto para salvar o usuário
+        const error = await register(name, email, password);
+        if (error) {
+            Alert.alert('Erro de cadastro', error);
+            return;
+        }
+
+        navigation.navigate('Login');
     };
-
-    login(newUser) // já registra e loga o usuário
-        .then(() => {
-        navigation.navigate('MainApp', { screen: 'Profile' });
-        })
-        .catch(err => console.error(err));
-};
 
     const handleRegisterWithGoogle = () => {
         // Lógica de registro com Google

@@ -14,6 +14,7 @@ import Notifications from '../screens/Notifications';
 import Chat from '../screens/Chat';
 import AddItem from '../screens/AddItem';
 import Favorites from '../screens/Favorites';
+import ProfileLoggedIn from '../screens/Auth/ProfileLoggedInScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -42,6 +43,7 @@ const RootNavigator = () => {
             <Stack.Screen name="AddItem" component={AddItem} />
             <Stack.Screen name="Favorites" component={Favorites} />
             <Stack.Screen name="Notifications" component={Notifications} />
+            <Stack.Screen name="Profile" component={ProfileLoggedIn} />
         </Stack.Navigator>
     );
 };
