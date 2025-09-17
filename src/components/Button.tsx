@@ -6,32 +6,35 @@ interface ButtonProps {
     title: string;
     onPress: () => void;
     disabled?: boolean;
-    variant?: 'primary' | 'secondary';
-    style?: ViewStyle; // Novo prop para diferenciar tipos
+    variant?: 'primary' | 'secondary' | 'success' | 'danger';
+    style?: ViewStyle;
 }
 
 const Button: React.FC<ButtonProps> = ({ title, onPress, disabled = false, variant = 'primary', style }) => {
-    const buttonStyles = [
-        styles.button,
-        variant === 'primary' ? styles.primaryButton : styles.secondaryButton,
-        disabled && styles.disabledButton,
-        style,
-    ];
+    
+    // A lógica de aplicação de estilos foi simplificada com um objeto de mapeamento
+    const getButtonStyles = () => {
+        const baseStyle = styles.button;
+        const variantStyle = styles[`${variant}Button`];
+        const disabledStyle = disabled ? styles.disabledButton : null;
+        return [baseStyle, variantStyle, disabledStyle, style];
+    };
 
-    const textStyles = [
-        styles.buttonText,
-        variant === 'primary' ? styles.primaryText : styles.secondaryText,
-        disabled && styles.disabledText,
-    ];
+    const getButtonTextStyles = () => {
+        const baseStyle = styles.buttonText;
+        const variantTextStyle = styles[`${variant}Text`];
+        const disabledTextStyle = disabled ? styles.disabledText : null;
+        return [baseStyle, variantTextStyle, disabledTextStyle];
+    };
 
     return (
         <TouchableOpacity
-            style={buttonStyles}
+            style={getButtonStyles()}
             onPress={onPress}
             disabled={disabled}
             activeOpacity={0.7}
         >
-            <Text style={textStyles}>{title}</Text>
+            <Text style={getButtonTextStyles()}>{title}</Text>
         </TouchableOpacity>
     );
 };
@@ -52,8 +55,14 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: Colors.dark.border,
     },
+    successButton: {
+        backgroundColor: Colors.light.success,
+    },
+    dangerButton: {
+        backgroundColor: Colors.light.error, // Estilo para a variante 'danger'
+    },
     disabledButton: {
-        opacity: 0.6,
+        opacity: 0.2,
     },
     buttonText: {
         fontSize: 16,
@@ -65,6 +74,12 @@ const styles = StyleSheet.create({
     },
     secondaryText: {
         color: Colors.dark.textPrimary,
+    },
+    successText: {
+        color: Colors.light.backgroundSecondary,
+    },
+    dangerText: {
+        color: Colors.light.backgroundSecondary, // Cor do texto para a variante 'danger'
     },
     disabledText: {
         color: Colors.light.textSecondary,

@@ -24,9 +24,6 @@ const Login: React.FC = () => {
             Alert.alert("Erro de login", error);
             return;
         }
-
-        // se login for bem-sucedido, redireciona para perfil logado
-        navigation.navigate("Profile");
     };
 
     const handleLoginWithGoogle = () => {

@@ -1,11 +1,11 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 
 export type BottomTabParamList = {
-  Home: undefined;
-  Favorites: undefined;
-  AddItem: undefined;
+  Início: undefined;
+  Favoritos: undefined;
+  Item: undefined;
   Chat: undefined;
-  Profile: undefined;
+  Perfil: undefined;
 };
 
 export type RootStackParamList = {
@@ -14,11 +14,12 @@ export type RootStackParamList = {
   ProfileNotLoggedIn: undefined;
   ProfileLoggedIn: undefined;
   ForgotPassword: undefined;
-  Item:undefined; 
+  Item: { id: any }; 
   Chat: undefined;
   Profile: undefined;
   AddItem: undefined;
   Favorites: undefined;
   Notifications: undefined;
+  FeedbackAddItem: { item: any };
   MainApp: NavigatorScreenParams<BottomTabParamList>;
 };

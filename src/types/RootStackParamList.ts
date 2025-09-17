@@ -14,11 +14,12 @@ Register: undefined;
 ProfileNotLoggedIn: undefined;
 ProfileLoggedIn: undefined;
 ForgotPassword: undefined;
-Item: undefined
+Item: { id: string };
 Chat: undefined
 Profile: undefined;
 AddItem: undefined;
 Favorites: undefined;
 Notifications: undefined;
+FeedbackAddItem: undefined;
 MainApp: NavigatorScreenParams<BottomTabParamList>;
 };
