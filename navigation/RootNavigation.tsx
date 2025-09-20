@@ -7,21 +7,21 @@ import { Colors } from '../src/constants/theme';
 import { useAuth } from '../context/AuthContext';
 
 // Telas de Autenticação
-import Login from '../screens/Auth/Login';
-import Register from '../screens/Auth/Register';
-import ForgotPassword from '../screens/Auth/ForgotPassword';
+import Login from '../screens/Auth/Login/index';
+import Register from '../screens/Auth/Register/index';
+import ForgotPassword from '../screens/Auth/ForgotPassword/index';
 
 // Telas do Aplicativo Principal (com Abas)
 import BottomTabNavigator from './BottomTabNavigator';
-import Item from '../screens/Item';
-import Notifications from '../screens/Notifications';
-import Chat from '../screens/Conversation';
-import AddItem from '../screens/AddItem';
-import Favorites from '../screens/Favorites';
-import ProfileLoggedIn from '../screens/ProfileLoggedInScreen';
-import Avaliation from '../screens/Avaliation';
-import FeedbackAddItem from '../screens/FeedbackAddItem';
-import Conversation from '../screens/Conversation';
+import Item from '../screens/Item/ItemScreen/index';
+import Notifications from '../screens/Notifications/index';
+import Chat from '../screens/Chat/ChatList/index';
+import AddItem from '../screens/Item/AddItem/index';
+import Favorites from '../screens/Favorites/index';
+import ProfileLoggedIn from '../screens/Profile/ProfileLoggedIn/index';
+import Avaliation from '../screens/Avaliation/index';
+import FeedbackAddItem from '../screens/Item/FeedbackAddItem/index';
+import Conversation from '../screens/Chat/Conversation/index';
 
 const Stack: any = createNativeStackNavigator();
 

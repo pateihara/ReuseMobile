@@ -7,12 +7,12 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../src/types/types';
 
-import HomePage from '../screens/HomePage';
-import Favorites from '../screens/Favorites';
-import AddItem from '../screens/AddItem';
-import Chat from '../screens/Conversation';
-import ProfileLoggedIn from '../screens/ProfileLoggedInScreen';
-import ProfileNotLoggedIn from '../screens/ProfileNotLoggedInScreen';
+import HomePage from '../screens/Home';
+import Favorites from '../screens/Favorites/index';
+import AddItem from '../screens/Item/AddItem/index';
+import Chat from '../screens/Chat/ChatList/index';
+import ProfileLoggedIn from '../screens/Profile/ProfileLoggedIn/index';
+import ProfileNotLoggedIn from '../screens/Profile/ProfileNotLoggedIn/index';
 import { BottomTabParamList } from '../src/types/types';
 
 
