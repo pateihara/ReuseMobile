@@ -18,8 +18,6 @@ import { RootStackParamList } from '../../../src/types/types';
 import Feedback from '../../../src/components/Feedback';
 import { styles } from './styles';
 
-const { width } = Dimensions.get('window');
-
 const initialMessages = [
     { id: '1', text: 'Olá, Carlos! Vi que você se interessou pelo livro Dom Casmurro. Eu tenho uma camiseta em ótimo estado, gostaria de trocar?', sender: 'Mariana' },
     { id: '2', text: 'Aguarde Carlos aceitar a solicitação para continuar.', sender: 'system' },
@@ -73,7 +71,7 @@ const Conversation: React.FC = () => {
                     message={item.text}
                     showButtons={true}
                     onGoBack={() => navigation.navigate('MainApp')}
-                    onRate={() => console.log('Avaliação enviada')}
+                    onRate={() => navigation.navigate('UserReview')}
                 />
             );
         }

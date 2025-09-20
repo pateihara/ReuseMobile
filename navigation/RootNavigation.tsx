@@ -19,9 +19,10 @@ import Chat from '../screens/Chat/ChatList/index';
 import AddItem from '../screens/Item/AddItem/index';
 import Favorites from '../screens/Favorites/index';
 import ProfileLoggedIn from '../screens/Profile/ProfileLoggedIn/index';
-import Avaliation from '../screens/Avaliation/index';
+import UserReview from '../screens/UserReview/Review/index';
 import FeedbackAddItem from '../screens/Item/FeedbackAddItem/index';
 import Conversation from '../screens/Chat/Conversation/index';
+import FeedbackUserReview from '../screens/UserReview/FeedbackUserReview/index'
 
 const Stack: any = createNativeStackNavigator();
 
@@ -36,8 +37,9 @@ const AppStack = () => (
         <Stack.Screen name="ProfileLoggedIn" component={ProfileLoggedIn} />
         <Stack.Screen name="FeedbackAddItem" component={FeedbackAddItem} />
         <Stack.Screen name="Item" component={Item} />
-        <Stack.Screen name="Avaliation" component={Avaliation} />
+        <Stack.Screen name="UserReview" component={UserReview} />
         <Stack.Screen name="Conversation" component={Conversation} />
+        <Stack.Screen name="FeedbackUserReview" component={FeedbackUserReview} />
     </Stack.Navigator>
 );
 

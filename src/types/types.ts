@@ -21,7 +21,14 @@ export type RootStackParamList = {
   Favorites: undefined;
   Notifications: undefined;
   FeedbackAddItem: { item: any };
-  Avaliation: undefined;
+  UserReview: undefined;
   Conversation: { chatId: string };
+  FeedbackUserReview: {
+    userName: string;
+    images: string[];
+    rating: number;
+    location: string;
+    comment: string;
+  };
   MainApp: NavigatorScreenParams<BottomTabParamList>;
 };

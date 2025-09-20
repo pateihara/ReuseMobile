@@ -21,7 +21,14 @@ AddItem: undefined;
 Favorites: undefined;
 Notifications: undefined;
 FeedbackAddItem: undefined;
-Avaliation: undefined;
+UserReview: undefined;
 Conversation: { chatId: string };
+FeedbackUserReview: {
+    userName: string;
+    images: string[];
+    rating: number;
+    location: string;
+    comment: string;
+};
 MainApp: NavigatorScreenParams<BottomTabParamList>;
 };

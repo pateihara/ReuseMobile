@@ -6,9 +6,14 @@ import Card from '../../../src/components/Cards/Card/index';
 import { Colors } from '../../../src/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './styles';
+import AddItem from '../../Item/AddItem';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../../src/types/types';
+import { useNavigation } from '@react-navigation/native';
 
 const ProfileLoggedInScreen: React.FC = () => {
 const { user, logout } = useAuth();
+const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
 // Dados de exemplo, substitua com dados reais do usuário
 const city = "Curitiba";
@@ -50,7 +55,7 @@ return (
         </View>
 
         {/* Botões */}
-        <Button variant="primary" title="Adicionar Novo Item" onPress={() => {}} style={{ marginBottom: 10 }} />
+        <Button variant="primary" title="Adicionar Novo Item" onPress={() => {navigation.navigate('AddItem')}} style={{ marginBottom: 10 }} />
         <Button variant="secondary" title="Editar Perfil" onPress={() => {}} style={{ marginBottom: 10 }} />
         <Button variant="secondary" title="Trocas em Andamento" onPress={() => {}} style={{ marginBottom: 10 }} />
         <Button variant="secondary" title="Produtos Ativos" onPress={() => {}} style={{ marginBottom: 10 }} />
