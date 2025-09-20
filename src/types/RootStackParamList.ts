@@ -21,5 +21,7 @@ AddItem: undefined;
 Favorites: undefined;
 Notifications: undefined;
 FeedbackAddItem: undefined;
+Avaliation: undefined;
+Conversation: { chatId: string };
 MainApp: NavigatorScreenParams<BottomTabParamList>;
 };

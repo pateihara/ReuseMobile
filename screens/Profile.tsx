@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import ProfileLoggedInScreen from './ProfileLoggedInScreen';
 import ProfileNotLoggedInScreen from './ProfileNotLoggedInScreen';
-import { Colors } from '../../src/constants/theme';
+import { Colors } from '../src/constants/theme';
 
 const ProfileScreen: React.FC = () => {
     const { user, isLoading } = useAuth();

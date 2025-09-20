@@ -10,9 +10,9 @@ import { RootStackParamList } from '../src/types/types';
 import HomePage from '../screens/HomePage';
 import Favorites from '../screens/Favorites';
 import AddItem from '../screens/AddItem';
-import Chat from '../screens/Chat';
-import ProfileLoggedIn from '../screens/Auth/ProfileLoggedInScreen';
-import ProfileNotLoggedIn from '../screens/Auth/ProfileNotLoggedInScreen';
+import Chat from '../screens/Conversation';
+import ProfileLoggedIn from '../screens/ProfileLoggedInScreen';
+import ProfileNotLoggedIn from '../screens/ProfileNotLoggedInScreen';
 import { BottomTabParamList } from '../src/types/types';
 
 

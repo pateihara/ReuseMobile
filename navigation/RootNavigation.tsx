@@ -15,12 +15,13 @@ import ForgotPassword from '../screens/Auth/ForgotPassword';
 import BottomTabNavigator from './BottomTabNavigator';
 import Item from '../screens/Item';
 import Notifications from '../screens/Notifications';
-import Chat from '../screens/Chat';
+import Chat from '../screens/Conversation';
 import AddItem from '../screens/AddItem';
 import Favorites from '../screens/Favorites';
-import ProfileLoggedIn from '../screens/Auth/ProfileLoggedInScreen';
-import ProfileNotLoggedIn from '../screens/Auth/ProfileNotLoggedInScreen';
+import ProfileLoggedIn from '../screens/ProfileLoggedInScreen';
+import Avaliation from '../screens/Avaliation';
 import FeedbackAddItem from '../screens/FeedbackAddItem';
+import Conversation from '../screens/Conversation';
 
 const Stack: any = createNativeStackNavigator();
 
@@ -35,6 +36,8 @@ const AppStack = () => (
         <Stack.Screen name="ProfileLoggedIn" component={ProfileLoggedIn} />
         <Stack.Screen name="FeedbackAddItem" component={FeedbackAddItem} />
         <Stack.Screen name="Item" component={Item} />
+        <Stack.Screen name="Avaliation" component={Avaliation} />
+        <Stack.Screen name="Conversation" component={Conversation} />
     </Stack.Navigator>
 );
 

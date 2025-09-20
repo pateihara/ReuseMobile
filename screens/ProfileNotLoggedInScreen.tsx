@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../src/types/RootStackParamList';
-import Button from '../../src/components/Button';
-import Card from '../../src/components/Card';
-import Header from '../../src/components/Header';
-import { Colors } from '../../src/constants/theme';
+import { RootStackParamList } from '../src/types/RootStackParamList';
+import Button from '../src/components/Button';
+import Card from '../src/components/Card';
+import Header from '../src/components/Header';
+import { Colors } from '../src/constants/theme';
 
 
 
@@ -20,7 +20,7 @@ const navigation = useNavigation<ProfileScreenNavigationProp>();
 
 return (
     <ImageBackground
-        source={require('../../src/assets/background.jpg')}
+        source={require('../src/assets/background.jpg')}
         style={styles.background}
         resizeMode="cover"
     >

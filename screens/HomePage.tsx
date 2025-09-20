@@ -11,25 +11,24 @@ import CategoryCard from '../src/components/CategoryCard';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../src/types/types';
 
-// importa o tipo para garantir status correto
 import type { ProductCardProps } from '../src/components/ProductCard';
 
 const { width } = Dimensions.get('window');
 
 const HomePage: React.FC = () => {
-    // 🌟 Tipagem correta para o navigation
+    
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
     const cardWidth = (width - 48) / 2; // 16px padding em cada lado + 16px gap entre cards
 
     // Em Alta
     const productsEmAlta: ProductCardProps[] = [...Array(6)].map((_, i) => ({
-        // 🌟 Adicione um 'id' para cada item para que a tela de detalhes possa identificá-lo
+        
         id: `alta-${i}`, 
         title: `Produto ${i + 1}`,
         image: 'https://media.istockphoto.com/id/1308599972/pt/vetorial/goods-returnable-icon-return-parcel-sign-vector-logo-template.jpg?s=170667a&w=0&k=20&c=dRQwosZycTDbBFHZ3Ec0ARFrKS0dcBgXcZ2PKV3x-RA=',
         description: 'Breve descrição do produto.',
-        // 🌟 Agora a navegação é feita de forma correta, passando um objeto com o id do item
+        
         onPress: () => navigation.navigate('Item'), 
         status:
             i % 4 === 0
@@ -43,12 +42,12 @@ const HomePage: React.FC = () => {
 
     // Perto de você
     const produtosPerto: ProductCardProps[] = [...Array(4)].map((_, i) => ({
-        // 🌟 Adicione um 'id' para cada item
+    
         id: `perto-${i}`, 
         title: `Produto ${i + 1}`,
         image: 'https://media.istockphoto.com/id/1308599972/pt/vetorial/goods-returnable-icon-return-parcel-sign-vector-logo-template.jpg?s=170667a&w=0&k=20&c=dRQwosZycTDbBFHZ3Ec0ARFrKS0dcBgXcZ2PKV3x-RA=',
         description: 'Breve descrição do produto.',
-        // 🌟 Navegação correta para a tela 'Item' com o id do produto
+        
         onPress: () => navigation.navigate('Item'), 
         status: 'disponivel',
     }));
@@ -85,7 +84,6 @@ const HomePage: React.FC = () => {
                                 title={product.title}
                                 image={product.image}
                                 description={product.description}
-                                // 🌟 Use a função 'onPress' do objeto 'product' que já tem a navegação correta
                                 onPress={product.onPress} 
                                 status={product.status}
                                 style={{ width: cardWidth }}
@@ -126,7 +124,6 @@ const HomePage: React.FC = () => {
                                 title={product.title}
                                 image={product.image}
                                 description={product.description}
-                                // 🌟 Use a função 'onPress' do objeto 'product' que já tem a navegação correta
                                 onPress={product.onPress}
                                 status={product.status}
                                 style={{ width: cardWidth }}
@@ -180,7 +177,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'flex-start',
-        gap: 12, // espaçamento entre cards
+        gap: 12, 
     },
     statsBox: {
         marginHorizontal: 16,

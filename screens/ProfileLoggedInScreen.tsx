@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { useAuth } from '../../context/AuthContext';
-import Button from '../../src/components/Button';
-import Card from '../../src/components/Card';
-import { Colors } from '../../src/constants/theme';
+import { useAuth } from '../context/AuthContext';
+import Button from '../src/components/Button';
+import Card from '../src/components/Card';
+import { Colors } from '../src/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 
 const ProfileLoggedInScreen: React.FC = () => {
