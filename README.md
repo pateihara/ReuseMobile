@@ -1,28 +1,23 @@
 # ReuseMobile
 
-Aplicativo móvel desenvolvido com **React Native** para promover a reutilização de itens, conectando usuários que desejam doar ou trocar objetos.
+O ReuseMobile é um aplicativo móvel desenvolvido com o intuito de facilitar a troca de itens entre usuários. A plataforma permite que os usuários publiquem produtos que desejam trocar e encontrem itens disponíveis em sua região, promovendo a reutilização e a sustentabilidade.
 
----
+## Tecnologias Utilizadas
 
-## 🚀 Tecnologias Utilizadas
-
-- **React Native**: Framework para desenvolvimento de aplicativos móveis.
-- **TypeScript**: Superset do JavaScript que adiciona tipagem estática.
+- **React Native**: Framework para desenvolvimento de aplicativos móveis multiplataforma.
+- **TypeScript**: Linguagem que adiciona tipagem estática ao JavaScript, aumentando a segurança e a manutenção do código.
+- **React Navigation**: Biblioteca para navegação entre telas no React Native.
 - **Expo**: Ferramenta para desenvolvimento e construção de aplicativos React Native.
 
----
+## Funcionalidades
 
-## 📁 Estrutura do Projeto
+- Cadastro e autenticação de usuários.
+- Publicação de itens para troca.
+- Navegação entre diferentes seções do aplicativo.
+- Visualização de detalhes dos itens.
+- Sistema de notificações para atualizações e mensagens.
 
-- `src/`: Contém os arquivos de código-fonte do aplicativo.
-- `App.tsx`: Componente principal do aplicativo.
-- `index.js`: Ponto de entrada da aplicação.
-- `package.json`: Gerenciador de dependências e scripts do projeto.
-- `tsconfig.json`: Configurações do TypeScript.
-
----
-
-## ⚙️ Como Executar o Projeto
+## Como Executar o Projeto
 
 1. Clone o repositório:
 
@@ -42,9 +37,8 @@ npm start
 ```
 Isso abrirá o Expo DevTools no navegador. Você poderá escanear o QR code com o aplicativo Expo Go no seu dispositivo móvel para visualizar o aplicativo.
 
----
 
-## 📱 Testando no Dispositivo
+## Testando no Dispositivo
 
 - Android: Use o  [Expo Go](https://play.google.com/store/apps/details?id=host.exp.exponent)
  para escanear o QR code.
@@ -52,9 +46,8 @@ Isso abrirá o Expo DevTools no navegador. Você poderá escanear o QR code com 
 - iOS: Use o [Expo Go](https://apps.apple.com/app/expo-go/id982107779)
  para escanear o QR code.
 
- ---
- 
- ## 📌 Contribuindo
+
+ ##  Contribuindo
 
 1. Faça um fork deste repositório.
 
@@ -78,9 +71,8 @@ git push origin minha-feature
 
 5. Abra um Pull Request.
 
----
 
-## 📄 Licença
+## Licença
 
 Este projeto está licenciado sob a [MIT License](LICENSE)
 .
