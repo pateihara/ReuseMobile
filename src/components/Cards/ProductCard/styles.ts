@@ -20,6 +20,7 @@ image: {
 },
 title: { fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
 description: { fontSize: 14, color: Colors.light.textSecondary, marginBottom: 8 },
+username: {fontSize: 13, color: Colors.light.textSecondary, marginBottom: 8, fontWeight: 'bold' },
 statusContainer: { paddingVertical: 4, paddingHorizontal: 8, borderRadius: 4, alignSelf: 'flex-start' },
 statusText: { color: Colors.light.backgroundSecondary, fontSize: 12, fontWeight: 'bold' }
 });

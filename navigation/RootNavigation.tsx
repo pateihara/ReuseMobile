@@ -23,6 +23,7 @@ import UserReview from '../screens/UserReview/Review/index';
 import FeedbackAddItem from '../screens/Item/FeedbackAddItem/index';
 import Conversation from '../screens/Chat/Conversation/index';
 import FeedbackUserReview from '../screens/UserReview/FeedbackUserReview/index'
+import TradesScreen from '../screens/TradesScreen';
 
 const Stack: any = createNativeStackNavigator();
 
@@ -40,6 +41,7 @@ const AppStack = () => (
         <Stack.Screen name="UserReview" component={UserReview} />
         <Stack.Screen name="Conversation" component={Conversation} />
         <Stack.Screen name="FeedbackUserReview" component={FeedbackUserReview} />
+        <Stack.Screen name="TradesScreen" component={TradesScreen} />
     </Stack.Navigator>
 );
 

@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../src/types/types';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import HomePage from '../screens/Home';
 import Favorites from '../screens/Favorites/index';
@@ -19,8 +20,8 @@ import { BottomTabParamList } from '../src/types/types';
 const Tab : any = createBottomTabNavigator<BottomTabParamList>();
 
 const BottomTabNavigator: React.FC = () => {
+    const { bottom } = useSafeAreaInsets();
     const { user } = useAuth();
-    // 🌟 Tipagem correta para o navigation do Stack
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>(); 
 
     return (
@@ -54,8 +55,8 @@ const BottomTabNavigator: React.FC = () => {
                 tabBarStyle: {
                     backgroundColor: Colors.light.backgroundSecondary,
                     borderTopColor: Colors.light.border,
-                    height: 60,
-                    paddingBottom: 5,
+                    height: 60 + bottom,
+        paddingBottom: bottom > 0 ? bottom : 5,
                 },
                 tabBarLabelStyle: { fontSize: 12 },
             })}
@@ -113,5 +114,6 @@ const BottomTabNavigator: React.FC = () => {
         </Tab.Navigator>
     );
 };
+
 
 export default BottomTabNavigator;

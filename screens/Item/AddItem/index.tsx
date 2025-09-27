@@ -13,6 +13,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from './styles';
+import { CommonActions } from '@react-navigation/native';
 
 // Chave para salvar os dados do formulário
 const FORM_DATA_KEY = '@addItemFormData';
@@ -103,24 +104,37 @@ const AddItem: React.FC = () => {
     const step = steps[currentStep];
 
     useEffect(() => {
-        const checkLoginStatus = async () => {
-            try {
-                const userToken = await AsyncStorage.getItem('@userToken');
-                if (userToken) {
-                    setIsLoggedIn(true);
-                } else {
-                    navigation.replace('Login');
-                }
-            } catch (e) {
-                console.error('Falha ao verificar o status de login:', e);
-                navigation.replace('Login');
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    const checkLoginStatus = async () => {
+        try {
+            const userToken = await AsyncStorage.getItem('@userToken');
 
-        checkLoginStatus();
-    }, [navigation]);
+            if (userToken) {
+                setIsLoggedIn(true);
+            } else {
+                // Reset da navegação para o fluxo público (RootNavigator → PublicFlow)
+                navigation.dispatch(
+                    CommonActions.reset({
+                        index: 0,
+                        routes: [{ name: 'PublicFlow' }],
+                    })
+                );
+            }
+        } catch (e) {
+            console.error('Falha ao verificar o status de login:', e);
+
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: 'PublicFlow' }],
+                })
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    checkLoginStatus();
+}, [navigation]);
 
     useEffect(() => {
         const loadSavedData = async () => {
@@ -261,7 +275,7 @@ const AddItem: React.FC = () => {
             await AsyncStorage.setItem('@items', JSON.stringify(updatedItems));
 
             console.log('Formulário concluído e item publicado!', newItem);
-            
+
             // 5. Navega para a próxima tela, passando o item com o ID
             navigation.navigate('FeedbackAddItem', { item: newItem });
 
@@ -297,7 +311,10 @@ const AddItem: React.FC = () => {
                         await AsyncStorage.removeItem(CURRENT_STEP_KEY);
                         setFormData({});
                         setCurrentStep(0);
-                        navigation.navigate('MainApp');
+                        navigation.getParent()?.reset({
+                            index: 0,
+                            routes: [{ name: 'LoggedInFlow' }], // ou 'PublicFlow' dependendo do caso
+                        });
                     }
                 }
             ]
@@ -320,7 +337,7 @@ const AddItem: React.FC = () => {
             </View>
         );
     }
-    
+
     return (
         <View style={styles.container}>
             <Header type="page" pageTitle="Publicar Item" />
@@ -402,7 +419,7 @@ const AddItem: React.FC = () => {
                                     </>
                                 )}
                             </TouchableOpacity>
-                            
+
                             <Text style={styles.manualEntryTitle}>Ou preencha manualmente:</Text>
                             <TextInput
                                 style={styles.input}

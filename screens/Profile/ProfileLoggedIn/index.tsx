@@ -57,7 +57,7 @@ return (
         {/* Botões */}
         <Button variant="primary" title="Adicionar Novo Item" onPress={() => {navigation.navigate('AddItem')}} style={{ marginBottom: 10 }} />
         <Button variant="secondary" title="Editar Perfil" onPress={() => {}} style={{ marginBottom: 10 }} />
-        <Button variant="secondary" title="Trocas em Andamento" onPress={() => {}} style={{ marginBottom: 10 }} />
+        <Button variant="secondary" title="Trocas em Andamento" onPress={() => {navigation.navigate('TradesScreen')}} style={{ marginBottom: 10 }} />
         <Button variant="secondary" title="Produtos Ativos" onPress={() => {}} style={{ marginBottom: 10 }} />
         <Button variant="secondary" title="Trocas Concluídas" onPress={() => {}} style={{ marginBottom: 10 }} />
         <Button variant="secondary" title="Minhas Avaliações" onPress={() => {}} style={{ marginBottom: 10 }} />

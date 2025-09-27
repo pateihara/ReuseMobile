@@ -15,4 +15,6 @@ export interface SafeAreaViewProps extends ViewProps {
 
 export const SafeAreaView: React.ComponentType<SafeAreaViewProps>;
 export function useSafeAreaInsets(): EdgeInsets;
+
+export const SafeAreaProvider: React.ComponentType<{ children?: React.ReactNode }>;
 }

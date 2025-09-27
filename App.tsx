@@ -3,14 +3,17 @@ import { StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthProvider } from './context/AuthContext';
 import RootNavigator from './navigation/RootNavigation';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const App = () => {
   return (
     <AuthProvider>
-      <NavigationContainer>
-        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-        <RootNavigator />
-      </NavigationContainer>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+          <RootNavigator />
+        </NavigationContainer>
+      </SafeAreaProvider>
     </AuthProvider>
   );
 };
