@@ -4,7 +4,7 @@ import { Colors } from '../../../constants/theme';
 import { styles } from './styles';
 
 export interface ProductCardProps {
-    id: string;
+    id?: string;
     title: string;
     image: string;
     description?: string;

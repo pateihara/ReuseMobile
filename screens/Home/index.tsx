@@ -81,7 +81,7 @@ const HomePage: React.FC = () => {
                     <View style={styles.grid}>
                         {productsEmAlta.map((product, i) => (
                             <ProductCard
-                                key={i}
+                                key={product.id}
                                 title={product.title}
                                 image={product.image}
                                 description={product.description}

@@ -1,5 +1,3 @@
-// Seu arquivo RootNavigator.js
-
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ActivityIndicator, View } from 'react-native';
@@ -24,6 +22,7 @@ import FeedbackAddItem from '../screens/Item/FeedbackAddItem/index';
 import Conversation from '../screens/Chat/Conversation/index';
 import FeedbackUserReview from '../screens/UserReview/FeedbackUserReview/index'
 import TradesScreen from '../screens/TradesScreen';
+import Desenvolvimento from '../screens/Desenvolvimento';
 
 const Stack: any = createNativeStackNavigator();
 
@@ -42,6 +41,7 @@ const AppStack = () => (
         <Stack.Screen name="Conversation" component={Conversation} />
         <Stack.Screen name="FeedbackUserReview" component={FeedbackUserReview} />
         <Stack.Screen name="TradesScreen" component={TradesScreen} />
+        <Stack.Screen name="Desenvolvimento" component={Desenvolvimento} />
     </Stack.Navigator>
 );
 

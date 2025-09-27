@@ -32,4 +32,5 @@ FeedbackUserReview: {
 };
 MainApp: NavigatorScreenParams<BottomTabParamList>;
 TradesScreen: undefined;
+Desenvolvimento: undefined;
 };

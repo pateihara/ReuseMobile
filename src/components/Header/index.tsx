@@ -7,11 +7,13 @@ ViewProps,
 Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../constants/theme';
 import SearchInput from '../Inputs/SearchInput';
 import { styles } from './styles';
+import { RootStackParamList } from '../../types/RootStackParamList';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 interface HeaderProps extends ViewProps {
 type: 'home' | 'page' | 'logo';
@@ -19,7 +21,7 @@ pageTitle?: string;
 onNotificationsPress?: () => void;
 onSearch?: (text: string) => void;
 logoSource?: any;
-headerHeight?: number; // 🔹 altura personalizável
+headerHeight?: number;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -28,18 +30,19 @@ pageTitle,
 onNotificationsPress,
 onSearch,
 logoSource,
-headerHeight = 60, // 🔹 valor padrão
+headerHeight = 60,
 style,
 ...props
 }) => {
-const navigation = useNavigation();
+
+const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
 const renderHomeHeader = () => (
     <>
     <View style={styles.searchContainer}>
         <SearchInput onChangeText={onSearch} />
     </View>
-    <TouchableOpacity onPress={onNotificationsPress}>
+    <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
         <Ionicons
         name="notifications-outline"
         size={24}
