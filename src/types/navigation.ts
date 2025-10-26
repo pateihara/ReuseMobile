@@ -10,7 +10,7 @@ export type BottomTabParamList = {
 };
 
 export type AppStackParamList = {
-  MainApp: NavigatorScreenParams<BottomTabParamList>;
+ MainApp: NavigatorScreenParams<BottomTabParamList>;
   Chat: undefined;
   AddItem: undefined;
   Favorites: undefined;

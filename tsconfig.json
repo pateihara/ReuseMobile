@@ -1,4 +1,30 @@
 {
-  "compilerOptions": {},
-  "extends": "expo/tsconfig.base"
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+
+    // ✅ deixe o Expo cuidar de moduleResolution (bundler)
+    // "moduleResolution": "bundler",
+
+    // Opcional: alias @/ para src
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    // Evita carregar tipos globais aleatórios
+    "types": []
+  },
+  "include": [
+    "App.tsx",
+    "index.js",
+    "src/**/*",
+    "navigation/**/*",
+    "screens/**/*",
+    "context/**/*"
+  ],
+  "exclude": ["node_modules", "babel.config.js", "metro.config.js"]
 }
