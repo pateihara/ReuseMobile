@@ -1,4 +1,3 @@
-// screens/Item/FeedbackAddItem/index.tsx
 import React from 'react';
 import { View, Text } from 'react-native';
 

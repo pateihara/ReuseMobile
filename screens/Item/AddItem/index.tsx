@@ -1,4 +1,3 @@
-// screens/Item/AddItem/index.tsx
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView, Image, Alert, ActivityIndicator
@@ -124,6 +123,7 @@ const AddItem: React.FC = () => {
           const parsed = JSON.parse(savedFormData);
           setFormData(parsed);
           if (parsed[5]) setAddressData(parsed[5]);
+          if (parsed[4]) setImages(parsed[4]);
         }
         if (savedStep) {
           setCurrentStep(parseInt(savedStep, 10));
@@ -182,34 +182,75 @@ const AddItem: React.FC = () => {
   const getGeolocatedAddress = async () => {
     setIsLoadingLocation(true);
     try {
-      let { status } = await Location.requestForegroundPermissionsAsync();
+      const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         Alert.alert('Permissão de localização negada', 'Habilite a permissão nas configurações.');
         setIsLoadingLocation(false);
         return;
       }
 
-      let currentLocation = await Location.getCurrentPositionAsync({});
+      const currentLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
       const { latitude, longitude } = currentLocation.coords;
 
-      const data = await fetchJson<any>(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
-        { cacheKey: `nominatim:${latitude}:${longitude}`, ttlMs: 5 * 60 * 1000 }
-      );
-
-      if (data.address) {
-        setAddressData({
-          cep: data.address.postcode || '',
-          state: data.address.state || '',
-          city: data.address.city || data.address.town || '',
-          neighborhood: data.address.suburb || data.address.neighbourhood || '',
-          street: data.address.road || '',
-          number: data.address.house_number || '',
-          complement: ''
-        });
-      } else {
-        Alert.alert('Erro', 'Não foi possível encontrar um endereço para sua localização.');
+      // Reverse geocoding com mais detalhe + headers obrigatórios
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&addressdetails=1&zoom=18&lat=${latitude}&lon=${longitude}`;
+      const res = await fetch(url, {
+        headers: {
+          'User-Agent': 'ReuseMobile/1.0 (contato: reusemobile@example.com)', // troque por um contato seu
+          'Accept-Language': 'pt-BR',
+        },
+      });
+      if (!res.ok) {
+        const txt = await res.text().catch(() => '');
+        throw new Error(`Reverse geocoding HTTP ${res.status} :: ${txt.slice(0, 120)}`);
       }
+      const data = await res.json();
+
+      const a = data.address ?? {};
+      // Fallback robusto de bairro/subdistrito
+      const bairroNominatim =
+        a.suburb ||
+        a.neighbourhood ||
+        a.city_district ||
+        a.borough ||
+        '';
+
+      // Pré-preenche com Nominatim
+      let next = {
+        cep: (a.postcode as string) || '',
+        state: (a.state as string) || '',
+        city: (a.city as string) || (a.town as string) || (a.village as string) || '',
+        neighborhood: (bairroNominatim as string) || '',
+        street: (a.road as string) || '',
+        number: (a.house_number as string) || '',
+        complement: '',
+      };
+
+      // Se veio CEP, normaliza com ViaCEP (oficial BR)
+      if (next.cep && /^\d{5}-?\d{3}$/.test(next.cep)) {
+        const cepDigits = next.cep.replace(/\D/g, '');
+        try {
+          const via = await fetchJson<{ uf?: string; localidade?: string; bairro?: string; logradouro?: string; erro?: boolean }>(
+            `https://viacep.com.br/ws/${cepDigits}/json/`,
+            { cacheKey: `viacep:${cepDigits}`, ttlMs: 24 * 60 * 60 * 1000 }
+          );
+          if (!via?.erro) {
+            next = {
+              ...next,
+              state: via.uf ?? next.state,
+              city: via.localidade ?? next.city,
+              neighborhood: via.bairro || next.neighborhood, // <- corrige bairro oficial
+              street: via.logradouro || next.street,
+            };
+          }
+        } catch {
+          // Se ViaCEP falhar, mantém dados do Nominatim
+        }
+      }
+
+      setAddressData(next);
     } catch (error) {
       console.error('Erro ao obter localização:', error);
       Alert.alert('Erro', 'Não foi possível obter a sua localização. Tente novamente mais tarde.');
@@ -225,8 +266,10 @@ const AddItem: React.FC = () => {
       return;
     }
 
+    // Mantém MediaTypeOptions para compatibilidade com a sua versão instalada
+    // Se você atualizar: troque por `ImagePicker.MediaType.Images`
     const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images, // <- compat
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -345,6 +388,7 @@ const AddItem: React.FC = () => {
               style={styles.dropdown}
               containerStyle={styles.dropdownContainer}
               dropDownContainerStyle={styles.dropdownListContainer}
+              listMode="SCROLLVIEW"  // <- evita FlatList interno (sem warning de VirtualizedList)
               onSelectItem={(item) => handleChange(String(item.value))}
             />
           )}

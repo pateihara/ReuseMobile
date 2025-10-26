@@ -1,6 +1,5 @@
-// screens/Item/ItemScreen/index.tsx
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, ImageBackground, FlatList } from 'react-native';
 import Header from '../../../src/components/Header';
 import Button from '../../../src/components/Button';
 import Feedback from '../../../src/components/Feedback';
@@ -62,7 +61,6 @@ const Item: React.FC = () => {
   }, []);
 
   const goToLoginTab = useCallback(() => {
-    // "Login" está no fluxo público → Tab 'Perfil' redireciona quando não logado
     navigation.navigate('MainApp', { screen: 'Perfil' });
   }, [navigation]);
 
@@ -71,11 +69,10 @@ const Item: React.FC = () => {
       goToLoginTab();
       return;
     }
-    // ✅ toggleFavorite espera um objeto Favorite ({ id, ... })
     const nowFav = await toggleFavorite({
       id: itemData.id,
-      title: itemData.name,              // opcional
-      thumb: itemData.images?.[0] ?? '', // opcional
+      title: itemData.name,
+      thumb: itemData.images?.[0] ?? '',
     });
     setIsFavorited(nowFav);
   }, [user, goToLoginTab]);
@@ -94,72 +91,81 @@ const Item: React.FC = () => {
     <View style={styles.container}>
       <Header type="page" pageTitle="Detalhes do Produto" />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
-        <View style={styles.content}>
-          <TouchableOpacity>
-            <Text style={styles.category}>{itemData.category}</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.productName}>{itemData.name}</Text>
-
-          <View style={styles.userContainer}>
-            <Text style={styles.user}>Publicado por: {itemData.user}</Text>
-            <TouchableOpacity
-              onPress={handleFavoritePress}
-              accessibilityRole="button"
-              accessibilityLabel="Favoritar item"
-            >
-              <Ionicons
-                name={isFavorited ? 'heart' : 'heart-outline'}
-                size={24}
-                color={user ? Colors.light.secondary : Colors.light.textSecondary}
-              />
+      {/* FlatList “vazia” com todo o conteúdo no Header → evita ScrollView + listas aninhadas */}
+      <FlatList
+        data={[] as any[]}
+        renderItem={() => null}
+        keyExtractor={(_, i) => String(i)}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        ListHeaderComponent={
+          <View style={styles.content}>
+            <TouchableOpacity>
+              <Text style={styles.category}>{itemData.category}</Text>
             </TouchableOpacity>
-          </View>
 
-          <ProductGallery images={itemData.images.map((uri) => ({ uri }))} />
+            <Text style={styles.productName}>{itemData.name}</Text>
 
-          <Text style={styles.description}>{itemData.description}</Text>
-
-          <Feedback
-            type="warning"
-            message="Nunca transfira dinheiro ou se comunique fora do site ou aplicativo."
-          />
-
-          {/* Produtos relacionados */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Produtos Relacionados</Text>
-            <Text style={styles.sectionSubtitle}>Produtos da mesma categoria</Text>
-            <View style={styles.grid}>
-              {itensRelacionados.map((product, i) => (
-                <ProductCard
-                  key={`rel-${i}`}
-                  title={product.title}
-                  image={product.image}
-                  description={product.description}
-                  onPress={() => navigation.navigate('Item', { id: '1' })}
-                  status={product.status}
-                  style={{ width: cardWidth }}
-                />
-              ))}
-            </View>
-          </View>
-
-          {/* Estatísticas + CTA */}
-          <View style={styles.statsBox}>
-            <View style={{ flex: 1, borderRadius: 8, overflow: 'hidden' }}>
-              <ImageBackground
-                source={require('../../../src/assets/background-stats.jpg')}
-                style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16 }}
-                resizeMode="cover"
+            <View style={styles.userContainer}>
+              <Text style={styles.user}>Publicado por: {itemData.user}</Text>
+              <TouchableOpacity
+                onPress={handleFavoritePress}
+                accessibilityRole="button"
+                accessibilityLabel="Favoritar item"
               >
-                <Text style={styles.statsText}>Já são +3.000 itens trocados pela comunidade!</Text>
-                <Button title="Publique um item" onPress={handlePublishItemPress} variant="primary" />
-              </ImageBackground>
+                <Ionicons
+                  name={isFavorited ? 'heart' : 'heart-outline'}
+                  size={24}
+                  color={user ? Colors.light.secondary : Colors.light.textSecondary}
+                />
+              </TouchableOpacity>
+            </View>
+
+            {/* ProductGallery pode usar FlatList internamente; aqui não há ScrollView externa */}
+            <ProductGallery images={itemData.images.map((uri) => ({ uri }))} />
+
+            <Text style={styles.description}>{itemData.description}</Text>
+
+            <Feedback
+              type="warning"
+              message="Nunca transfira dinheiro ou se comunique fora do site ou aplicativo."
+            />
+
+            {/* Produtos relacionados */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Produtos Relacionados</Text>
+              <Text style={styles.sectionSubtitle}>Produtos da mesma categoria</Text>
+              <View style={styles.grid}>
+                {itensRelacionados.map((product, i) => (
+                  <ProductCard
+                    key={`rel-${i}`}
+                    title={product.title}
+                    image={product.image}
+                    description={product.description}
+                    onPress={() => navigation.navigate('Item', { id: '1' })}
+                    status={product.status}
+                    style={{ width: cardWidth }}
+                  />
+                ))}
+              </View>
+            </View>
+
+            {/* Estatísticas + CTA */}
+            <View style={styles.statsBox}>
+              <View style={{ flex: 1, borderRadius: 8, overflow: 'hidden' }}>
+                <ImageBackground
+                  source={require('../../../src/assets/background-stats.jpg')}
+                  style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16 }}
+                  resizeMode="cover"
+                >
+                  <Text style={styles.statsText}>Já são +3.000 itens trocados pela comunidade!</Text>
+                  <Button title="Publique um item" onPress={handlePublishItemPress} variant="primary" />
+                </ImageBackground>
+              </View>
             </View>
           </View>
-        </View>
-      </ScrollView>
+        }
+      />
 
       {/* Botão fixo embaixo */}
       <View style={styles.bottomBar}>
