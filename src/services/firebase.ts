@@ -1,14 +1,22 @@
 // src/services/firebase.ts
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAAa9v7F-Un2_jw_KdlWUey7FO3dW712JA",
-  authDomain: "reuse-mobile.firebaseapp.com",
-  projectId: "reuse-mobile",
-  storageBucket: "reuse-mobile.firebasestorage.app",
-  messagingSenderId: "257764412083",
-  appId: "1:257764412083:web:ff73b22158b74cd6837ec6",
-  measurementId: "G-QY9Z20Y4ZG"
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY!,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN!,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID!,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET!, // ex.: reuse-mobile.appspot.com
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID!,
+  // measurementId não é necessário no RN
 };
 
-export const app = initializeApp(firebaseConfig);
+export const app: FirebaseApp =
+  getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
