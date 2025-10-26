@@ -1,92 +1,75 @@
+// screens/UserReview/FeedbackUserReview/styles.ts
 import { StyleSheet } from 'react-native';
 import { Colors } from '../../../src/constants/theme';
 
 export const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: Colors.light.backgroundPrimary },
-    content: { padding: 16 },
-    card: { padding: 24, zIndex: 1000 },
+  container: {
+    flex: 1,
+    backgroundColor: Colors.light.backgroundPrimary,
+  },
+  content: {
+    padding: 16,
+  },
+  card: {
+    padding: 24,
+  },
 
-    stepTitle: {
-        fontWeight: 'bold',
-        fontSize: 16,
-        marginBottom: 8,
-        color: Colors.light.textSecondary
-    },
-    question: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 4,
-        marginTop: 20,
-        color: Colors.light.textPrimary
-    },
-    description: {
-        fontSize: 15,
-        color: Colors.light.textSecondary,
-        marginBottom: 12
-    },
+  // Títulos e textos
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.light.textPrimary,
+    marginBottom: 6,
+    textAlign: 'center',
+  },
+  description: {
+    fontSize: 15,
+    color: Colors.light.textSecondary,
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  itemName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.light.textPrimary,
+    marginBottom: 12,
+  },
 
-    // Input de comentário
-    input: {
-        borderWidth: 1,
-        borderColor: Colors.light.border,
-        borderRadius: 6,
-        padding: 12,
-        fontSize: 16,
-        marginTop: 10,
-        textAlignVertical: 'top',
-        minHeight: 100
-    },
+  // Separador
+  divider: {
+    height: 1,
+    backgroundColor: Colors.light.border,
+    marginVertical: 16,
+    opacity: 0.6,
+  },
 
-    // Estrelas de avaliação
-    starsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginVertical: 20
-    },
+  // Avaliação (estrelas)
+  ratingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 4,
+  },
+  ratingText: {
+    marginLeft: 8,
+    color: Colors.light.textPrimary,
+    fontWeight: '600',
+  },
 
-    // Botões do rodapé
-    footer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: 16
-    },
-    footerButton: {
-        flex: 1,
-        marginHorizontal: 4
-    },
+  // Localização e detalhes
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+    gap: 6,
+  },
+  itemDetail: {
+    color: Colors.light.textPrimary,
+    fontSize: 15,
+  },
 
-    // Fotos
-    cameraContainer: {
-        flexDirection: 'column',
-        alignItems: 'center',
-        marginTop: 20
-    },
-    cameraButton: {
-        width: 120,
-        height: 120,
-        borderRadius: 6,
-        borderWidth: 1,
-        borderColor: Colors.light.border,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    cameraButtonText: {
-        marginTop: 8,
-        color: Colors.light.primary,
-        fontSize: 14,
-    },
-    imagePreviewContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        marginTop: 16,
-        justifyContent: 'center',
-    },
-    imagePreview: {
-        width: 80,
-        height: 80,
-        borderRadius: 6,
-        margin: 4,
-        borderWidth: 1,
-        borderColor: Colors.light.border,
-    },
+  // Botões
+  buttonsRow: {
+    marginTop: 16,
+  },
 });

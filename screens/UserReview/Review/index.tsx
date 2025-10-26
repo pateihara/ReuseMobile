@@ -1,161 +1,140 @@
-//screens/UserReview/Review/index.tsx
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
+// screens/UserReview/FeedbackUserReview/index.tsx
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, ActivityIndicator, Image } from 'react-native';
 import Header from '../../../src/components/Header';
 import Card from '../../../src/components/Cards/Card';
 import Button from '../../../src/components/Button';
 import { Colors } from '../../../src/constants/theme';
-import { styles } from './styles';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../src/types/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { styles } from './styles';
 
-type Step = {
-    title: string;
-    question: string;
-    description: string;
-    type: 'stars' | 'text' | 'camera';
-};
+import { AppStackParamList } from '../../../src/types/navigation';
 
-const steps: Step[] = [
-    { title: 'Passo 1 de 3', question: 'Quantas estrelas o usuário merece?', description: 'Sua avaliação ajuda a comunidade a ser mais segura e confiável.', type: 'stars' },
-    { title: 'Passo 2 de 3', question: 'Quer deixar um comentário sobre a troca? (opcional)', description: 'Texto livre, limite de 200 caracteres.', type: 'text' },
-    { title: 'Passo 3 de 3', question: 'Adicione fotos do item', description: 'Até 5 imagens, em boa iluminação.', type: 'camera' },
-];
+type Nav = NativeStackNavigationProp<AppStackParamList, 'FeedbackUserReview'>;
 
-const UserReview: React.FC = () => {
-    const [currentStep, setCurrentStep] = useState(0);
-    const [rating, setRating] = useState<number>(0);
-    const [comment, setComment] = useState('');
-    const [images, setImages] = useState<string[]>([]);
-    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+interface ReviewData {
+  userName: string;
+  images?: string[];
+  rating: number;
+  location: string;
+  comment: string;
+}
 
-    const step = steps[currentStep];
+const FeedbackUserReview: React.FC = () => {
+  const navigation = useNavigation<Nav>();
+  const [reviewData, setReviewData] = useState<ReviewData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    const pickImage = async () => {
-        const { status } = await ImagePicker.requestCameraPermissionsAsync();
-        if (status !== 'granted') {
-            Alert.alert('Permissão necessária', 'Precisamos da permissão para acessar sua câmera.');
-            return;
-        }
-
-        let result = await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            if (images.length >= 5) {
-                Alert.alert('Limite atingido', 'Você pode adicionar no máximo 5 imagens.');
-                return;
-            }
-            setImages([...images, result.assets[0].uri]);
-        }
-    };
-
-    const handleNext = () => {
-        if (currentStep === steps.length - 1) {
-            handleSubmit();
+  useEffect(() => {
+    const loadReview = async () => {
+      try {
+        const storedReview = await AsyncStorage.getItem('@userReview');
+        if (storedReview) {
+          setReviewData(JSON.parse(storedReview));
         } else {
-            setCurrentStep(currentStep + 1);
+          console.warn('Nenhuma avaliação encontrada no AsyncStorage');
         }
+      } catch (error) {
+        console.error('Erro ao carregar avaliação:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const handleBack = () => {
-        if (currentStep > 0) {
-            setCurrentStep(currentStep - 1);
-        }
-    };
+    loadReview();
+  }, []);
 
-    const handleSubmit = async () => {
-        try {
-            const reviewData = {
-                userName: 'Mariana', // aqui você pode colocar dinamicamente
-                rating,
-                comment,
-                images,
-                location: 'São Paulo – Vila Mariana', // aqui também pode ser dinâmica
-            };
-
-            await AsyncStorage.setItem('@userReview', JSON.stringify(reviewData));
-
-            console.log('Avaliação salva:', reviewData);
-
-            navigation.navigate('FeedbackUserReview'); // agora a tela de feedback lê do AsyncStorage
-        } catch (error) {
-            console.error('Erro ao salvar avaliação:', error);
-            Alert.alert('Erro', 'Não foi possível salvar a avaliação.');
-        }
-    };
-
+  if (loading) {
     return (
-        <View style={styles.container}>
-            <Header type="page" pageTitle="Avaliar Usuário" />
-
-            <ScrollView contentContainerStyle={styles.content}>
-                <Card style={styles.card}>
-                    <Text style={styles.stepTitle}>{step.title}</Text>
-                    <Text style={styles.question}>{step.question}</Text>
-                    <Text style={styles.description}>{step.description}</Text>
-
-                    {step.type === 'stars' && (
-                        <View style={styles.starsContainer}>
-                            {[1, 2, 3, 4, 5].map((star) => (
-                                <TouchableOpacity key={star} onPress={() => setRating(star)}>
-                                    <Ionicons
-                                        name={rating >= star ? 'star' : 'star-outline'}
-                                        size={40}
-                                        color={Colors.light.primary}
-                                    />
-                                </TouchableOpacity>
-                            ))}
-                        </View>
-                    )}
-
-                    {step.type === 'text' && (
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Escreva aqui..."
-                            maxLength={200}
-                            value={comment}
-                            onChangeText={setComment}
-                            multiline
-                        />
-                    )}
-
-                    {step.type === 'camera' && (
-                        <View style={styles.cameraContainer}>
-                            <TouchableOpacity onPress={pickImage} style={styles.cameraButton}>
-                                <Ionicons name="camera-outline" size={40} color={Colors.light.primary} />
-                                <Text style={styles.cameraButtonText}>Tirar foto</Text>
-                            </TouchableOpacity>
-                            <View style={styles.imagePreviewContainer}>
-                                {images.map((imageUri, index) => (
-                                    <Image key={index} source={{ uri: imageUri }} style={styles.imagePreview} />
-                                ))}
-                            </View>
-                        </View>
-                    )}
-                </Card>
-            </ScrollView>
-
-            <View style={styles.footer}>
-                {currentStep > 0 && (
-                    <Button title="Voltar" variant="secondary" onPress={handleBack} style={styles.footerButton} />
-                )}
-                <Button
-                    title={currentStep === steps.length - 1 ? 'Concluir Avaliação' : 'Continuar'}
-                    variant={currentStep === steps.length - 1 ? 'success' : 'primary'}
-                    onPress={handleNext}
-                    style={styles.footerButton}
-                />
-            </View>
-        </View>
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color={Colors.light.primary} />
+        <Text style={{ marginTop: 10, color: Colors.light.textSecondary }}>
+          Carregando avaliação...
+        </Text>
+      </View>
     );
+  }
+
+  if (!reviewData) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Text style={styles.title}>Nenhuma avaliação encontrada.</Text>
+        <Button
+          title="Voltar à tela inicial"
+          variant="success"
+          onPress={() => navigation.navigate('MainApp', { screen: 'Início' })}
+        />
+      </View>
+    );
+  }
+
+  const { userName, rating, location, comment, images } = reviewData;
+
+  return (
+    <View style={styles.container}>
+      <Header type="page" pageTitle="Avaliação concluída" />
+
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.title}>Sua avaliação de usuário foi enviada com sucesso!</Text>
+        <Text style={styles.description}>
+          Com cada avaliação, a comunidade Re Use fica mais segura e colaborativa.
+        </Text>
+
+        <View style={styles.divider} />
+
+        <Card style={styles.card}>
+          <Text style={styles.itemName}>Avaliação para {userName}</Text>
+
+          {/* Avaliação em estrelas */}
+          <View style={styles.ratingRow}>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Ionicons
+                key={index}
+                name={index < rating ? 'star' : 'star-outline'}
+                size={20}
+                color={Colors.light.primary}
+              />
+            ))}
+            <Text style={styles.ratingText}>{rating}/5</Text>
+          </View>
+
+          {/* Localização */}
+          <View style={styles.locationRow}>
+            <Ionicons name="location-sharp" size={16} color={Colors.light.textPrimary} />
+            <Text style={styles.itemDetail}>{location}</Text>
+          </View>
+
+          {/* Imagens da avaliação */}
+          {images && images.length > 0 && (
+            <ScrollView horizontal style={{ marginVertical: 10 }}>
+              {images.map((uri, index) => (
+                <Image
+                  key={index}
+                  source={{ uri }}
+                  style={{ width: 100, height: 100, borderRadius: 6, marginRight: 8 }}
+                />
+              ))}
+            </ScrollView>
+          )}
+
+          {/* Descrição da avaliação */}
+          <Text style={styles.itemDetail}>{comment}</Text>
+
+          {/* Botão de retorno */}
+          <View style={styles.buttonsRow}>
+            <Button
+              title="Voltar à tela inicial"
+              variant="success"
+              onPress={() => navigation.navigate('MainApp', { screen: 'Início' })}
+            />
+          </View>
+        </Card>
+      </ScrollView>
+    </View>
+  );
 };
 
-export default UserReview;
+export default FeedbackUserReview;

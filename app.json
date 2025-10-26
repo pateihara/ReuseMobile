@@ -2,25 +2,30 @@
   "expo": {
     "name": "ReuseMobile",
     "slug": "ReuseMobile",
+    "scheme": "reusemobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
       "image": "./src/assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#2563EB"
     },
-    "ios": { "supportsTablet": true },
+    "ios": {
+      "supportsTablet": true
+    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/icon.png",
         "backgroundColor": "#2563EB"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "newArchEnabled": true 
     },
-    "web": { "favicon": "./src/assets/favicon.png" },
+    "web": {
+      "favicon": "./src/assets/favicon.png"
+    },
     "plugins": ["expo-web-browser"]
   }
 }

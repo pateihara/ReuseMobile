@@ -16,13 +16,13 @@ export type AppStackParamList = {
   Favorites: undefined;
   Notifications: undefined;
   ProfileLoggedIn: undefined;
-  FeedbackAddItem: undefined;
-  Item: { id?: string } | undefined;
-  UserReview: { userId?: string } | undefined;
+  FeedbackAddItem: { item?: any } | undefined;
+  Item: { id?: string } | undefined;  UserReview: { userId?: string } | undefined;
   Conversation: { chatId?: string } | undefined;
   FeedbackUserReview: undefined;
   TradesScreen: undefined;
   Desenvolvimento: undefined;
+  
 };
 
 export type PublicStackParamList = {

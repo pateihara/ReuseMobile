@@ -1,3 +1,4 @@
+//screens/Chat/ChatList/index.tsx
 import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native';
 import Header from '../../../src/components/Header/index';

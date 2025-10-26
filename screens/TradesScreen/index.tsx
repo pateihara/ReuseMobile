@@ -10,14 +10,15 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { ListRenderItem } from 'react-native';
 import type { ProductCardProps } from '../../src/components/Cards/ProductCard';
 import { styles } from './styles';
-
 import { AppStackParamList } from '../../src/types/navigation';
 
 const { width } = Dimensions.get('window');
 const cardMargin = 16;
 const cardWidth = width - cardMargin * 2;
 
-const mockTradesItems: ProductCardProps[] = [
+type TradeItem = ProductCardProps & { id: string };
+
+const mockTradesItems: TradeItem[] = [
   {
     id: 'troca-1',
     title: 'Produto 1',
@@ -27,7 +28,6 @@ const mockTradesItems: ProductCardProps[] = [
     username: 'João Silva',
     onPress: () => {},
   },
-  // ... demais itens
 ];
 
 type Nav = NativeStackNavigationProp<AppStackParamList>;
@@ -35,7 +35,7 @@ type Nav = NativeStackNavigationProp<AppStackParamList>;
 const TradesScreen: React.FC = () => {
   const navigation = useNavigation<Nav>();
 
-  const renderItem: ListRenderItem<ProductCardProps> = ({ item }) => (
+  const renderItem: ListRenderItem<TradeItem> = ({ item }) => (
     <ProductCard
       id={item.id}
       title={item.title}
@@ -51,10 +51,7 @@ const TradesScreen: React.FC = () => {
     <View style={styles.emptyContainer}>
       <Ionicons name="swap-horizontal-outline" size={80} color={Colors.light.textSecondary} />
       <Text style={styles.emptyText}>Você ainda não tem trocas em andamento.</Text>
-      <TouchableOpacity
-        // ✅ navega para a stack "MainApp" abrindo a aba 'Início'
-        onPress={() => navigation.navigate('MainApp', { screen: 'Início' })}
-      >
+      <TouchableOpacity onPress={() => navigation.navigate('MainApp', { screen: 'Início' })}>
         <Text style={styles.emptySubtitle}>Explore a página inicial para iniciar uma troca!</Text>
       </TouchableOpacity>
     </View>
@@ -63,16 +60,14 @@ const TradesScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <Header type="page" pageTitle="Trocas em Andamento" />
-      <FlatList<ProductCardProps>
-  data={mockTradesItems}
-  renderItem={renderItem}
-  keyExtractor={(item, index) => item.id ?? String(index)} // ✅ sempre retorna string
-  numColumns={1}
-  ListEmptyComponent={EmptyTrades}
-  contentContainerStyle={
-    mockTradesItems.length === 0 ? styles.listEmpty : styles.listContent
-  }
-/>
+      <FlatList<TradeItem>
+        data={mockTradesItems}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => item.id ?? String(index)} // ✅ sempre string
+        numColumns={1}
+        ListEmptyComponent={EmptyTrades}
+        contentContainerStyle={mockTradesItems.length === 0 ? styles.listEmpty : styles.listContent}
+      />
     </View>
   );
 };

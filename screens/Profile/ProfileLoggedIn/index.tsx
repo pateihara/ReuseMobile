@@ -1,26 +1,27 @@
-//screens/Profile/ProfileLoggedIn/index.tsx
 // screens/Profile/ProfileLoggedIn/index.tsx
 import React from 'react';
 import { View, Text, Image } from 'react-native';
 import { useAuth } from '../../../context/AuthContext';
-import Button from '../../../src/components/Button/index';
-import Card from '../../../src/components/Cards/Card/index';
+import Button from '../../../src/components/Button';
+import Card from '../../../src/components/Cards/Card';
 import { Colors } from '../../../src/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './styles';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../../src/types/types';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AppStackParamList } from '../../../src/types/navigation';
+
+type Nav = NativeStackNavigationProp<AppStackParamList>;
 
 const ProfileLoggedInScreen: React.FC = () => {
   const { user, logout } = useAuth();
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<Nav>();
 
   const userName = user?.displayName || 'Usuário';
-  const city = "Curitiba";
+  const city = 'Curitiba';
   const exchanges = 12;
   const activeProducts = 5;
-  const profilePhoto = "https://i.pravatar.cc/150?img=43";
+  const profilePhoto = 'https://i.pravatar.cc/150?img=43';
 
   return (
     <View style={styles.container}>
@@ -53,12 +54,42 @@ const ProfileLoggedInScreen: React.FC = () => {
           </View>
         </View>
 
-        <Button variant="primary" title="Adicionar Novo Item" onPress={() => navigation.navigate('AddItem')} style={{ marginBottom: 10 }} />
-        <Button variant="secondary" title="Editar Perfil" onPress={() => navigation.navigate('Desenvolvimento')} style={{ marginBottom: 10 }} />
-        <Button variant="secondary" title="Trocas em Andamento" onPress={() => navigation.navigate('TradesScreen')} style={{ marginBottom: 10 }} />
-        <Button variant="secondary" title="Produtos Ativos" onPress={() => navigation.navigate('Desenvolvimento')} style={{ marginBottom: 10 }} />
-        <Button variant="secondary" title="Trocas Concluídas" onPress={() => navigation.navigate('Desenvolvimento')} style={{ marginBottom: 10 }} />
-        <Button variant="secondary" title="Minhas Avaliações" onPress={() => navigation.navigate('Desenvolvimento')} style={{ marginBottom: 10 }} />
+        <Button
+          variant="primary"
+          title="Adicionar Novo Item"
+          onPress={() => navigation.navigate('AddItem')}
+          style={{ marginBottom: 10 }}
+        />
+        <Button
+          variant="secondary"
+          title="Editar Perfil"
+          onPress={() => navigation.navigate('Desenvolvimento')}
+          style={{ marginBottom: 10 }}
+        />
+        <Button
+          variant="secondary"
+          title="Trocas em Andamento"
+          onPress={() => navigation.navigate('TradesScreen')}
+          style={{ marginBottom: 10 }}
+        />
+        <Button
+          variant="secondary"
+          title="Produtos Ativos"
+          onPress={() => navigation.navigate('Desenvolvimento')}
+          style={{ marginBottom: 10 }}
+        />
+        <Button
+          variant="secondary"
+          title="Trocas Concluídas"
+          onPress={() => navigation.navigate('Desenvolvimento')}
+          style={{ marginBottom: 10 }}
+        />
+        <Button
+          variant="secondary"
+          title="Minhas Avaliações"
+          onPress={() => navigation.navigate('Desenvolvimento')}
+          style={{ marginBottom: 10 }}
+        />
         <Button title="Sair" onPress={logout} />
       </Card>
     </View>

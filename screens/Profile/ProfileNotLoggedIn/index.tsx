@@ -1,22 +1,20 @@
-//screens/Profile/ProfileNotLoggedIn/index.tsx
 // screens/Profile/ProfileNotLoggedIn/index.tsx
 import React from 'react';
 import { View, Text, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../src/types/RootStackParamList';
-import Button from '../../../src/components/Button/index';
-import Card from '../../../src/components/Cards/Card/index';
-import Header from '../../../src/components/Header/index';
+
+import Button from '../../../src/components/Button';
+import Card from '../../../src/components/Cards/Card';
+import Header from '../../../src/components/Header';
 import { styles } from './styles';
 
-type ProfileScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'ProfileNotLoggedIn'
->;
+import { PublicStackParamList } from '../../../src/types/navigation';
+
+type Nav = NativeStackNavigationProp<PublicStackParamList, 'MainApp'>;
 
 const ProfileNotLoggedInScreen: React.FC = () => {
-  const navigation = useNavigation<ProfileScreenNavigationProp>();
+  const navigation = useNavigation<Nav>();
 
   return (
     <ImageBackground

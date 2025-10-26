@@ -1,19 +1,24 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+// context/AuthContext.tsx
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import {
+  initializeAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   User,
-  getAuth,
   GoogleAuthProvider,
   signInWithCredential,
   updateProfile,
   sendPasswordResetEmail,
+  getAuth,
 } from 'firebase/auth';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
+
 import { app } from '../src/services/firebase';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -28,51 +33,71 @@ interface AuthContextType {
   forgotPassword: (email: string) => Promise<string | null>;
 }
 
-const AuthContext = createContext<AuthContextType>({} as AuthContextType);
-const auth = getAuth(app);
+// 🔽 import condicional para o submódulo (evita erro no TS e no Web)
+let getReactNativePersistence: ((storage: any) => any) | undefined;
+if (Platform.OS !== 'web') {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  ({ getReactNativePersistence } = require('firebase/auth/react-native'));
+}
 
-// Se tiver scheme no app.json, pode usar: AuthSession.makeRedirectUri({ scheme: 'seuapp' })
-const redirectUri = AuthSession.makeRedirectUri();
+// Auth: Web usa getAuth; Native usa initializeAuth + AsyncStorage
+const auth =
+  Platform.OS === 'web' || !getReactNativePersistence
+    ? getAuth(app)
+    : initializeAuth(app, {
+        persistence: getReactNativePersistence(AsyncStorage),
+      });
+
+// redirectUri com scheme (configure "scheme": "reusemobile" no app.json)
+const redirectUri = AuthSession.makeRedirectUri({ scheme: 'reusemobile' });
+
+// Contexto
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Google Auth
   const [_request, response, promptAsync] = Google.useAuthRequest({
     clientId: '257764412083-ctdqj4lnip13fcdkuoonqhnnek5pdrhn.apps.googleusercontent.com',
     redirectUri,
   });
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (usr) => {
+    const unsub = onAuthStateChanged(auth, (usr) => {
       setUser(usr);
       setLoading(false);
     });
-    return unsubscribe;
+    return unsub;
   }, []);
 
   useEffect(() => {
-    if (response?.type === 'success') {
-      (async () => {
-        const { id_token } = response.params;
+    console.log('🔁 Redirect URI:', redirectUri);
+  }, []);
+
+  useEffect(() => {
+    const authenticateWithGoogle = async () => {
+      if (response?.type === 'success') {
+        const { id_token } = response.params as { id_token?: string };
+        if (!id_token) return;
         const credential = GoogleAuthProvider.credential(id_token);
         try {
           await signInWithCredential(auth, credential);
-        } catch (error) {
-          console.error('Erro ao autenticar com Google:', error);
+        } catch (err) {
+          console.error('Erro ao autenticar com Google:', err);
         }
-      })();
-    }
+      }
+    };
+    authenticateWithGoogle();
   }, [response]);
 
   const login = async (email: string, password: string): Promise<string | null> => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       return null;
-    } catch (error: any) {
-      console.error('Erro ao logar:', error);
-      return error.message || 'Erro ao logar';
+    } catch (err: any) {
+      console.error('Erro ao logar:', err);
+      return err?.message || 'Erro ao logar';
     }
   };
 
@@ -83,28 +108,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         await updateProfile(auth.currentUser, { displayName: name });
       }
       return null;
-    } catch (error: any) {
-      console.error('Erro ao registrar:', error);
-      return error.message || 'Erro ao registrar';
+    } catch (err: any) {
+      console.error('Erro ao registrar:', err);
+      return err?.message || 'Erro ao registrar';
     }
   };
 
   const logout = async (): Promise<void> => {
     try {
       await signOut(auth);
-    } catch (error) {
-      console.error('Erro ao deslogar:', error);
+      // não faça reset('PublicFlow'); o RootNavigator troca pelo estado "user"
+    } catch (err) {
+      console.error('Erro ao deslogar:', err);
     }
   };
 
   const loginWithGoogle = async (): Promise<string | null> => {
     try {
       const result = await promptAsync();
-      if (result.type !== 'success') return 'Login com Google cancelado.';
+      if (result.type !== 'success') {
+        return 'Login com Google cancelado.';
+      }
       return null;
-    } catch (error: any) {
-      console.error('Erro no login com Google:', error);
-      return error.message || 'Erro no login com Google';
+    } catch (err: any) {
+      console.error('Erro no login com Google:', err);
+      return err?.message || 'Erro no login com Google';
     }
   };
 
@@ -112,9 +140,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await sendPasswordResetEmail(auth, email);
       return null;
-    } catch (error: any) {
-      console.error('Erro ao enviar e-mail de recuperação:', error);
-      return error.message || 'Erro ao enviar e-mail de recuperação';
+    } catch (err: any) {
+      console.error('Erro ao enviar e-mail de recuperação:', err);
+      return err?.message || 'Erro ao enviar e-mail de recuperação';
     }
   };
 
