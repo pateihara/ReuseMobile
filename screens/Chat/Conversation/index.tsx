@@ -1,13 +1,7 @@
 // screens/Chat/Conversation/index.tsx
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
+  View, Text, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import Header from '../../../src/components/Header';
 import { Colors } from '../../../src/constants/theme';
@@ -16,10 +10,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Feedback from '../../../src/components/Feedback';
 import { styles } from './styles';
-
 import { AppStackParamList } from '../../../src/types/navigation';
 
-// Tipagem simples para as mensagens
 type ChatMessage = {
   id: string;
   text: string;
@@ -81,7 +73,8 @@ const Conversation: React.FC = () => {
           message={item.text}
           showButtons
           onGoBack={() => navigation.navigate('MainApp', { screen: 'Início' })}
-          onRate={() => navigation.navigate('UserReview')}
+          // → leva ao formulário de avaliação; pode passar userName padrão
+          onRate={() => navigation.navigate('UserReview', { userName: 'Carlos' })}
         />
       );
     }

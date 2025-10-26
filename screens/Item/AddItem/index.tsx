@@ -18,8 +18,8 @@ import { styles } from './styles';
 
 import { AppStackParamList } from '../../../src/types/navigation';
 import { useAuth } from '../../../context/AuthContext';
+import { fetchJson } from '../../../src/services/api';
 
-// Chaves para salvar os dados do formulário
 const FORM_DATA_KEY = '@addItemFormData';
 const CURRENT_STEP_KEY = '@addItemCurrentStep';
 
@@ -107,14 +107,13 @@ const AddItem: React.FC = () => {
 
   const step = steps[currentStep];
 
-  // Se não estiver logado, vai para a tela de Login
   useEffect(() => {
     if (!authLoading && !user) {
-        navigation.navigate('MainApp', { screen: 'Perfil' });
+      // manda pra aba Perfil, que tem os botões Login/Register
+      navigation.navigate('MainApp', { screen: 'Perfil' });
     }
   }, [authLoading, user, navigation]);
 
-  // Carrega rascunho salvo
   useEffect(() => {
     const loadSavedData = async () => {
       try {
@@ -136,7 +135,6 @@ const AddItem: React.FC = () => {
     if (user) loadSavedData();
   }, [user]);
 
-  // Salva rascunho
   useEffect(() => {
     const saveFormData = async () => {
       try {
@@ -149,22 +147,44 @@ const AddItem: React.FC = () => {
     if (user) saveFormData();
   }, [formData, currentStep, user]);
 
-  // Sincroniza endereço dentro do formData
   useEffect(() => {
     if (user) {
       setFormData((prev: any) => ({ ...prev, [5]: addressData }));
     }
   }, [addressData, user]);
 
+  const fetchViaCEP = async (cepRaw: string) => {
+    const cep = cepRaw.replace(/\D/g, '');
+    if (cep.length !== 8) return;
+    try {
+      const data = await fetchJson<{ uf: string; localidade: string; bairro: string; logradouro: string; erro?: boolean }>(
+        `https://viacep.com.br/ws/${cep}/json/`,
+        { cacheKey: `viacep:${cep}`, ttlMs: 10 * 60 * 1000 }
+      );
+      if (data?.erro) {
+        Alert.alert('CEP inválido', 'Não encontramos esse CEP.');
+        return;
+      }
+      setAddressData((prev) => ({
+        ...prev,
+        cep,
+        state: data.uf ?? '',
+        city: data.localidade ?? '',
+        neighborhood: data.bairro ?? '',
+        street: data.logradouro ?? '',
+      }));
+    } catch (e) {
+      console.error('Erro ViaCEP:', e);
+      Alert.alert('Erro', 'Não foi possível consultar o CEP agora.');
+    }
+  };
+
   const getGeolocatedAddress = async () => {
     setIsLoadingLocation(true);
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert(
-          'Permissão de localização negada',
-          'Não foi possível obter sua localização. Por favor, habilite a permissão nas configurações.'
-        );
+        Alert.alert('Permissão de localização negada', 'Habilite a permissão nas configurações.');
         setIsLoadingLocation(false);
         return;
       }
@@ -172,10 +192,10 @@ const AddItem: React.FC = () => {
       let currentLocation = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = currentLocation.coords;
 
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+      const data = await fetchJson<any>(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
+        { cacheKey: `nominatim:${latitude}:${longitude}`, ttlMs: 5 * 60 * 1000 }
       );
-      const data = await response.json();
 
       if (data.address) {
         setAddressData({
@@ -185,7 +205,7 @@ const AddItem: React.FC = () => {
           neighborhood: data.address.suburb || data.address.neighbourhood || '',
           street: data.address.road || '',
           number: data.address.house_number || '',
-          complement: '',
+          complement: ''
         });
       } else {
         Alert.alert('Erro', 'Não foi possível encontrar um endereço para sua localização.');
@@ -201,14 +221,11 @@ const AddItem: React.FC = () => {
   const pickImage = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert(
-        'Permissão necessária',
-        'Precisamos da permissão para acessar sua câmera para que você possa tirar fotos.'
-      );
+      Alert.alert('Permissão necessária', 'Permita acesso à câmera para tirar fotos.');
       return;
     }
 
-    let result = await ImagePicker.launchCameraAsync({
+    const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
@@ -217,7 +234,7 @@ const AddItem: React.FC = () => {
 
     if (!result.canceled) {
       const newImageUri = result.assets[0].uri;
-      const updatedImages = [...images, newImageUri].slice(0, 5); // até 5
+      const updatedImages = [...images, newImageUri].slice(0, 5);
       setImages(updatedImages);
       setFormData({ ...formData, [currentStep]: updatedImages });
     }
@@ -236,8 +253,7 @@ const AddItem: React.FC = () => {
       const existingItems = await AsyncStorage.getItem('@items');
       const items = existingItems ? JSON.parse(existingItems) : [];
 
-      // gera id simples incremental
-      const nextId = items.length > 0 ? Math.max(...items.map((it: any) => it.id || 0)) + 1 : 1;
+      const nextId = items.length > 0 ? Math.max(...items.map((it: any) => Number(it.id) || 0)) + 1 : 1;
 
       const newItem = {
         id: String(nextId),
@@ -247,10 +263,8 @@ const AddItem: React.FC = () => {
       const updatedItems = [...items, newItem];
       await AsyncStorage.setItem('@items', JSON.stringify(updatedItems));
 
-      // vai para o feedback (AppStack) com o item
       navigation.navigate('FeedbackAddItem', { item: newItem });
 
-      // limpa rascunho
       await AsyncStorage.removeItem(FORM_DATA_KEY);
       await AsyncStorage.removeItem(CURRENT_STEP_KEY);
     } catch (e) {
@@ -260,9 +274,7 @@ const AddItem: React.FC = () => {
   };
 
   const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep((s) => s - 1);
-    }
+    if (currentStep > 0) setCurrentStep((s) => s - 1);
   };
 
   const handleCancel = () => {
@@ -278,7 +290,6 @@ const AddItem: React.FC = () => {
             await AsyncStorage.removeItem(CURRENT_STEP_KEY);
             setFormData({});
             setCurrentStep(0);
-            // Volta para a Home da Tab:
             navigation.navigate('MainApp', { screen: 'Início' });
           },
         },
@@ -394,7 +405,11 @@ const AddItem: React.FC = () => {
                 style={styles.input}
                 placeholder="CEP"
                 value={addressData.cep}
-                onChangeText={(t) => handleAddressChange('cep', t)}
+                onChangeText={(t) => {
+                  const onlyDigits = t.replace(/\D/g, '').slice(0, 8);
+                  handleAddressChange('cep', onlyDigits);
+                  if (onlyDigits.length === 8) fetchViaCEP(onlyDigits);
+                }}
                 keyboardType="numeric"
               />
               <TextInput

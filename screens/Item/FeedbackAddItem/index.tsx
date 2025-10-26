@@ -1,40 +1,13 @@
-// src/types/navigation.ts
-import { NavigatorScreenParams } from '@react-navigation/native';
+// screens/Item/FeedbackAddItem/index.tsx
+import React from 'react';
+import { View, Text } from 'react-native';
 
-export type BottomTabParamList = {
-  'Início': undefined;
-  'Favoritos': undefined;
-  'Adicionar': undefined;
-  'Chat': undefined;
-  'Perfil': undefined;
+const FeedbackAddItem: React.FC = () => {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Publicação concluída</Text>
+    </View>
+  );
 };
 
-export type AppStackParamList = {
-  MainApp: NavigatorScreenParams<BottomTabParamList>;
-  Chat: undefined;
-  AddItem: undefined;
-  Favorites: undefined;
-  Notifications: undefined;
-  ProfileLoggedIn: undefined;
-  // 🔽 troque de "undefined" para aceitar params
-  FeedbackAddItem: { item?: any } | undefined;
-  Item: { id?: string } | undefined;
-  UserReview: { userId?: string } | undefined;
-  Conversation: { chatId?: string } | undefined;
-  FeedbackUserReview: undefined;
-  TradesScreen: undefined;
-  Desenvolvimento: undefined;
-};
-
-export type PublicStackParamList = {
-  MainApp: NavigatorScreenParams<BottomTabParamList>;
-  Login: undefined;
-  Register: undefined;
-  ForgotPassword: undefined;
-  Item: { id?: string } | undefined;
-};
-
-export type RootStackParamList = {
-  LoggedInFlow: undefined;
-  PublicFlow: undefined;
-};
+export default FeedbackAddItem;

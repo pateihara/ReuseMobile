@@ -3,20 +3,11 @@
   "compilerOptions": {
     "strict": true,
     "noEmit": true,
-    "isolatedModules": true,
-    "skipLibCheck": true,
 
-    // ✅ deixe o Expo cuidar de moduleResolution (bundler)
-    // "moduleResolution": "bundler",
-
-    // Opcional: alias @/ para src
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    },
-
-    // Evita carregar tipos globais aleatórios
-    "types": []
+    }
   },
   "include": [
     "App.tsx",
@@ -26,5 +17,9 @@
     "screens/**/*",
     "context/**/*"
   ],
-  "exclude": ["node_modules", "babel.config.js", "metro.config.js"]
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js"
+  ]
 }

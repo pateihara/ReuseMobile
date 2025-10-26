@@ -1,13 +1,12 @@
-// App.tsx
+// App.tsx (essencial)
 import React from 'react';
 import { StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
 import { AuthProvider } from './context/AuthContext';
 import RootNavigator from './navigation/RootNavigation';
 
-const App = () => {
+export default function App() {
   return (
     <AuthProvider>
       <SafeAreaProvider>
@@ -18,6 +17,4 @@ const App = () => {
       </SafeAreaProvider>
     </AuthProvider>
   );
-};
-
-export default App;
+}

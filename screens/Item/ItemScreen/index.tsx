@@ -1,5 +1,5 @@
 // screens/Item/ItemScreen/index.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
 import Header from '../../../src/components/Header';
 import Button from '../../../src/components/Button';
@@ -12,12 +12,14 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AppStackParamList, PublicStackParamList } from '../../../src/types/navigation';
+import { AppStackParamList } from '../../../src/types/navigation';
 import { styles } from './styles';
+import { isFavorite, toggleFavorite } from '../../../src/services/favorites';
 
 const { width } = Dimensions.get('window');
 
 const itemData = {
+  id: '1',
   category: 'Eletrônicos',
   name: 'Smartphone XYZ',
   user: 'João Silva',
@@ -29,9 +31,8 @@ const itemData = {
   description: 'Este é um smartphone de última geração com todas as funcionalidades que você precisa.',
 };
 
-// Itens Relacionados
+// Itens Relacionados (mock)
 const itensRelacionados: ProductCardProps[] = [...Array(4)].map((_, i) => ({
-  id: `rel-${i + 1}`,
   title: `Produto ${i + 1}`,
   image:
     'https://media.istockphoto.com/id/1308599972/pt/vetorial/goods-returnable-icon-return-parcel-sign-vector-logo-template.jpg?s=170667a&w=0&k=20&c=dRQwosZycTDbBFHZ3Ec0ARFrKS0dcBgXcZ2PKV3x-RA=',
@@ -40,8 +41,7 @@ const itensRelacionados: ProductCardProps[] = [...Array(4)].map((_, i) => ({
   status: 'disponivel',
 }));
 
-// ✅ Interseção dos dois stacks: a navegação aceita tanto rotas do App quanto do Public
-type Nav = NativeStackNavigationProp<AppStackParamList & PublicStackParamList>;
+type Nav = NativeStackNavigationProp<AppStackParamList>;
 
 const Item: React.FC = () => {
   const { user } = useAuth();
@@ -50,31 +50,45 @@ const Item: React.FC = () => {
 
   const [isFavorited, setIsFavorited] = useState(false);
 
-  const handleFavoritePress = () => {
+  useEffect(() => {
+    (async () => {
+      try {
+        const f = await isFavorite(itemData.id);
+        setIsFavorited(f);
+      } catch {
+        setIsFavorited(false);
+      }
+    })();
+  }, []);
+
+  const goToLoginTab = useCallback(() => {
+    // "Login" está no fluxo público → Tab 'Perfil' redireciona quando não logado
+    navigation.navigate('MainApp', { screen: 'Perfil' });
+  }, [navigation]);
+
+  const handleFavoritePress = useCallback(async () => {
     if (!user) {
-      // Se não estiver logado, pode mandar para Login (válido no PublicStack)
-      navigation.navigate('Login');
-    } else {
-      setIsFavorited((prev) => !prev);
-      console.log('Item favoritado/desfavoritado:', !isFavorited);
+      goToLoginTab();
+      return;
     }
-  };
+    // ✅ toggleFavorite espera um objeto Favorite ({ id, ... })
+    const nowFav = await toggleFavorite({
+      id: itemData.id,
+      title: itemData.name,              // opcional
+      thumb: itemData.images?.[0] ?? '', // opcional
+    });
+    setIsFavorited(nowFav);
+  }, [user, goToLoginTab]);
 
-  const handleTrocarAgoraPress = () => {
-    if (user) {
-      navigation.navigate('Chat'); // AppStack
-    } else {
-      navigation.navigate('Login'); // PublicStack
-    }
-  };
+  const handleTrocarAgoraPress = useCallback(() => {
+    if (user) navigation.navigate('Chat');
+    else goToLoginTab();
+  }, [user, navigation, goToLoginTab]);
 
-  const handlePublishItemPress = () => {
-    if (user) {
-      navigation.navigate('AddItem'); // AppStack
-    } else {
-      navigation.navigate('Login'); // PublicStack
-    }
-  };
+  const handlePublishItemPress = useCallback(() => {
+    if (user) navigation.navigate('AddItem');
+    else goToLoginTab();
+  }, [user, navigation, goToLoginTab]);
 
   return (
     <View style={styles.container}>
@@ -90,7 +104,11 @@ const Item: React.FC = () => {
 
           <View style={styles.userContainer}>
             <Text style={styles.user}>Publicado por: {itemData.user}</Text>
-            <TouchableOpacity onPress={handleFavoritePress}>
+            <TouchableOpacity
+              onPress={handleFavoritePress}
+              accessibilityRole="button"
+              accessibilityLabel="Favoritar item"
+            >
               <Ionicons
                 name={isFavorited ? 'heart' : 'heart-outline'}
                 size={24}
@@ -113,14 +131,13 @@ const Item: React.FC = () => {
             <Text style={styles.sectionTitle}>Produtos Relacionados</Text>
             <Text style={styles.sectionSubtitle}>Produtos da mesma categoria</Text>
             <View style={styles.grid}>
-              {itensRelacionados.map((product) => (
+              {itensRelacionados.map((product, i) => (
                 <ProductCard
-                  key={product.id}
-                  id={product.id}
+                  key={`rel-${i}`}
                   title={product.title}
                   image={product.image}
                   description={product.description}
-                  onPress={() => navigation.navigate('Item', { id: String(1) })}
+                  onPress={() => navigation.navigate('Item', { id: '1' })}
                   status={product.status}
                   style={{ width: cardWidth }}
                 />

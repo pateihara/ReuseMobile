@@ -16,9 +16,7 @@ const { width } = Dimensions.get('window');
 const cardMargin = 16;
 const cardWidth = width - cardMargin * 2;
 
-type TradeItem = ProductCardProps & { id: string };
-
-const mockTradesItems: TradeItem[] = [
+const mockTradesItems: ProductCardProps[] = [
   {
     id: 'troca-1',
     title: 'Produto 1',
@@ -35,14 +33,14 @@ type Nav = NativeStackNavigationProp<AppStackParamList>;
 const TradesScreen: React.FC = () => {
   const navigation = useNavigation<Nav>();
 
-  const renderItem: ListRenderItem<TradeItem> = ({ item }) => (
+  const renderItem: ListRenderItem<ProductCardProps> = ({ item }) => (
     <ProductCard
       id={item.id}
       title={item.title}
       image={item.image}
       status={item.status}
       username={item.username}
-      onPress={() => navigation.navigate('Item', { id: item.id })}
+      onPress={() => navigation.navigate('Item', { id: item.id || '1' })}
       style={{ width: cardWidth, marginHorizontal: cardMargin / 2, marginBottom: cardMargin }}
     />
   );
@@ -60,10 +58,10 @@ const TradesScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <Header type="page" pageTitle="Trocas em Andamento" />
-      <FlatList<TradeItem>
+      <FlatList<ProductCardProps>
         data={mockTradesItems}
         renderItem={renderItem}
-        keyExtractor={(item, index) => item.id ?? String(index)} // ✅ sempre string
+        keyExtractor={(item, index) => String(item.id ?? index)}
         numColumns={1}
         ListEmptyComponent={EmptyTrades}
         contentContainerStyle={mockTradesItems.length === 0 ? styles.listEmpty : styles.listContent}

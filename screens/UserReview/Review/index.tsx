@@ -8,20 +8,13 @@ import { Colors } from '../../../src/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from './styles';
-
 import { AppStackParamList } from '../../../src/types/navigation';
 
-type Nav = NativeStackNavigationProp<AppStackParamList, 'FeedbackUserReview'>;
+// ✅ use o serviço centralizado para (ler/gravar) a avaliação
+import { getReview, setReview, ReviewData } from '../../../src/services/reviews';
 
-interface ReviewData {
-  userName: string;
-  images?: string[];
-  rating: number;
-  location: string;
-  comment: string;
-}
+type Nav = NativeStackNavigationProp<AppStackParamList, 'FeedbackUserReview'>;
 
 const FeedbackUserReview: React.FC = () => {
   const navigation = useNavigation<Nav>();
@@ -29,22 +22,18 @@ const FeedbackUserReview: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadReview = async () => {
-      try {
-        const storedReview = await AsyncStorage.getItem('@userReview');
-        if (storedReview) {
-          setReviewData(JSON.parse(storedReview));
-        } else {
-          console.warn('Nenhuma avaliação encontrada no AsyncStorage');
-        }
-      } catch (error) {
-        console.error('Erro ao carregar avaliação:', error);
-      } finally {
-        setLoading(false);
+    const load = async () => {
+      const data = await getReview();
+      if (data) {
+        setReviewData(data);
+      } else {
+        // inicializa a chave para evitar qualquer warn em outros pontos do app
+        await setReview(null);
+        setReviewData(null);
       }
+      setLoading(false);
     };
-
-    loadReview();
+    load();
   }, []);
 
   if (loading) {
@@ -72,6 +61,7 @@ const FeedbackUserReview: React.FC = () => {
   }
 
   const { userName, rating, location, comment, images } = reviewData;
+  const safeRating = Math.max(0, Math.min(5, Number(rating) || 0));
 
   return (
     <View style={styles.container}>
@@ -88,17 +78,17 @@ const FeedbackUserReview: React.FC = () => {
         <Card style={styles.card}>
           <Text style={styles.itemName}>Avaliação para {userName}</Text>
 
-          {/* Avaliação em estrelas */}
+          {/* Estrelas */}
           <View style={styles.ratingRow}>
             {Array.from({ length: 5 }).map((_, index) => (
               <Ionicons
                 key={index}
-                name={index < rating ? 'star' : 'star-outline'}
+                name={index < safeRating ? 'star' : 'star-outline'}
                 size={20}
                 color={Colors.light.primary}
               />
             ))}
-            <Text style={styles.ratingText}>{rating}/5</Text>
+            <Text style={styles.ratingText}>{safeRating}/5</Text>
           </View>
 
           {/* Localização */}
@@ -120,7 +110,7 @@ const FeedbackUserReview: React.FC = () => {
             </ScrollView>
           )}
 
-          {/* Descrição da avaliação */}
+          {/* Comentário */}
           <Text style={styles.itemDetail}>{comment}</Text>
 
           {/* Botão de retorno */}
