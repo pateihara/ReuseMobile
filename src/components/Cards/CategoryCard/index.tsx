@@ -1,3 +1,4 @@
+// src/components/Cards/CategoryCard/index.tsx
 import React from 'react';
 import { View, Text } from 'react-native';
 import { styles } from './styles';

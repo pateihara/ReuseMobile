@@ -4,82 +4,84 @@ import { ActivityIndicator, View } from 'react-native';
 import { Colors } from '../src/constants/theme';
 import { useAuth } from '../context/AuthContext';
 
-// Telas de Autenticação
-import Login from '../screens/Auth/Login/index';
-import Register from '../screens/Auth/Register/index';
-import ForgotPassword from '../screens/Auth/ForgotPassword/index';
+// Autenticação
+import Login from '../screens/Auth/Login';
+import Register from '../screens/Auth/Register';
+import ForgotPassword from '../screens/Auth/ForgotPassword';
 
-// Telas do Aplicativo Principal (com Abas)
+// App
 import BottomTabNavigator from './BottomTabNavigator';
-import Item from '../screens/Item/ItemScreen/index';
-import Notifications from '../screens/Notifications/index';
-import Chat from '../screens/Chat/ChatList/index';
-import AddItem from '../screens/Item/AddItem/index';
-import Favorites from '../screens/Favorites/index';
-import ProfileLoggedIn from '../screens/Profile/ProfileLoggedIn/index';
-import UserReview from '../screens/UserReview/Review/index';
-import FeedbackAddItem from '../screens/Item/FeedbackAddItem/index';
-import Conversation from '../screens/Chat/Conversation/index';
-import FeedbackUserReview from '../screens/UserReview/FeedbackUserReview/index'
+import Item from '../screens/Item/ItemScreen';
+import Notifications from '../screens/Notifications';
+import Chat from '../screens/Chat/ChatList';
+import AddItem from '../screens/Item/AddItem';
+import Favorites from '../screens/Favorites';
+import ProfileLoggedIn from '../screens/Profile/ProfileLoggedIn';
+import UserReview from '../screens/UserReview/Review';
+import FeedbackAddItem from '../screens/Item/FeedbackAddItem';
+import Conversation from '../screens/Chat/Conversation';
+import FeedbackUserReview from '../screens/UserReview/FeedbackUserReview';
 import TradesScreen from '../screens/TradesScreen';
 import Desenvolvimento from '../screens/Desenvolvimento';
 
-const Stack: any = createNativeStackNavigator();
+import {
+  RootStackParamList,
+  AppStackParamList,
+  PublicStackParamList,
+} from '../src/types/navigation';
 
-// 1. Pilha para usuários logados
-const AppStack = () => (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="MainApp" component={BottomTabNavigator} />
-        <Stack.Screen name="Chat" component={Chat} />
-        <Stack.Screen name="AddItem" component={AddItem} />
-        <Stack.Screen name="Favorites" component={Favorites} />
-        <Stack.Screen name="Notifications" component={Notifications} />
-        <Stack.Screen name="ProfileLoggedIn" component={ProfileLoggedIn} />
-        <Stack.Screen name="FeedbackAddItem" component={FeedbackAddItem} />
-        <Stack.Screen name="Item" component={Item} />
-        <Stack.Screen name="UserReview" component={UserReview} />
-        <Stack.Screen name="Conversation" component={Conversation} />
-        <Stack.Screen name="FeedbackUserReview" component={FeedbackUserReview} />
-        <Stack.Screen name="TradesScreen" component={TradesScreen} />
-        <Stack.Screen name="Desenvolvimento" component={Desenvolvimento} />
-    </Stack.Navigator>
+const RootStack = createNativeStackNavigator<RootStackParamList>();
+const AppStack = createNativeStackNavigator<AppStackParamList>();
+const PublicStack = createNativeStackNavigator<PublicStackParamList>();
+
+const AppStackNavigator = () => (
+  <AppStack.Navigator screenOptions={{ headerShown: false }}>
+    <AppStack.Screen name="MainApp" component={BottomTabNavigator} />
+    <AppStack.Screen name="Chat" component={Chat} />
+    <AppStack.Screen name="AddItem" component={AddItem} />
+    <AppStack.Screen name="Favorites" component={Favorites} />
+    <AppStack.Screen name="Notifications" component={Notifications} />
+    <AppStack.Screen name="ProfileLoggedIn" component={ProfileLoggedIn} />
+    <AppStack.Screen name="FeedbackAddItem" component={FeedbackAddItem} />
+    <AppStack.Screen name="Item" component={Item} />
+    <AppStack.Screen name="UserReview" component={UserReview} />
+    <AppStack.Screen name="Conversation" component={Conversation} />
+    <AppStack.Screen name="FeedbackUserReview" component={FeedbackUserReview} />
+    <AppStack.Screen name="TradesScreen" component={TradesScreen} />
+    <AppStack.Screen name="Desenvolvimento" component={Desenvolvimento} />
+  </AppStack.Navigator>
 );
 
-// 2. Pilha para usuários não logados, que podem navegar na home e em outras telas públicas
-const PublicStack = () => (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* A BottomTabNavigator como a primeira tela */}
-        <Stack.Screen name="MainApp" component={BottomTabNavigator} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        {/* Adicione outras telas que podem ser acessadas sem login aqui, se necessário */}
-        <Stack.Screen name="Item" component={Item} />
-    </Stack.Navigator>
+const PublicStackNavigator = () => (
+  <PublicStack.Navigator screenOptions={{ headerShown: false }}>
+    <PublicStack.Screen name="MainApp" component={BottomTabNavigator} />
+    <PublicStack.Screen name="Login" component={Login} />
+    <PublicStack.Screen name="Register" component={Register} />
+    <PublicStack.Screen name="ForgotPassword" component={ForgotPassword} />
+    <PublicStack.Screen name="Item" component={Item} />
+  </PublicStack.Navigator>
 );
 
 const RootNavigator = () => {
-    const { user, isLoading } = useAuth();
+  const { user, loading: isLoading } = useAuth();
 
-    if (isLoading) {
-        return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size="large" color={Colors.light.primary} />
-            </View>
-        );
-    }
-
+  if (isLoading) {
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-            {user ? (
-                // ✅ Se o usuário estiver logado, mostre o App Stack
-                <Stack.Screen name="LoggedInFlow" component={AppStack} />
-            ) : (
-                // 🔒 Se o usuário não estiver logado, mostre o Public Stack
-                <Stack.Screen name="PublicFlow" component={PublicStack} />
-            )}
-        </Stack.Navigator>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={Colors.light.primary} />
+      </View>
     );
+  }
+
+  return (
+    <RootStack.Navigator screenOptions={{ headerShown: false }}>
+      {user ? (
+        <RootStack.Screen name="LoggedInFlow" component={AppStackNavigator} />
+      ) : (
+        <RootStack.Screen name="PublicFlow" component={PublicStackNavigator} />
+      )}
+    </RootStack.Navigator>
+  );
 };
 
 export default RootNavigator;

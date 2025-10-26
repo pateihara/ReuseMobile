@@ -1,3 +1,4 @@
+// src/components/Feedback/index.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';

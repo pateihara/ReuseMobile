@@ -1,3 +1,4 @@
+// src/components/Cards/ProductCard/index.tsx
 import React from 'react';
 import { View, Text, Image, ViewStyle, StyleProp, TouchableOpacity } from 'react-native';
 import { Colors } from '../../../constants/theme';

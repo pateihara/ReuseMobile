@@ -1,3 +1,4 @@
+// src/components/Button/styles.ts
 import { StyleSheet } from 'react-native';
 import { Colors, Fonts } from '../../../src/constants/theme';
 

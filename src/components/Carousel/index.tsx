@@ -1,3 +1,4 @@
+// src/components/Carousel/index.tsx
 import React from 'react';
 import { Image, View } from 'react-native';
 import Swiper from 'react-native-swiper';

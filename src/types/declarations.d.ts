@@ -1,3 +1,4 @@
+//src/types/declarations.d.ts
 declare module 'react-native-safe-area-context' {
 import * as React from 'react';
 import { ViewProps } from 'react-native';

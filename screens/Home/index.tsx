@@ -1,3 +1,4 @@
+// screens/Home/index.tsx
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Dimensions, ImageBackground } from 'react-native';
 import Carousel from '../../src/components/Carousel/index';

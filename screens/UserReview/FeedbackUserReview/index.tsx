@@ -1,3 +1,4 @@
+//screens/UserReview/FeedbackUserReview/index.tsx
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, ActivityIndicator, Image } from 'react-native';
 import Header from '../../../src/components/Header';

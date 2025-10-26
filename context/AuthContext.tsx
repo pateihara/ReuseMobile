@@ -1,101 +1,130 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  User,
+  getAuth,
+  GoogleAuthProvider,
+  signInWithCredential,
+  updateProfile,
+  sendPasswordResetEmail,
+} from 'firebase/auth';
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
+import * as AuthSession from 'expo-auth-session';
+import { app } from '../src/services/firebase';
 
-type User = {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-};
+WebBrowser.maybeCompleteAuthSession();
 
-type AuthContextType = {
-    user: User | null;
-    isLoading: boolean;
-    login: (email: string, password: string) => Promise<string | null>;
-    register: (name: string, email: string, password: string) => Promise<string | null>;
-    logout: () => Promise<void>;
-};
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<string | null>;
+  register: (name: string, email: string, password: string) => Promise<string | null>;
+  logout: () => Promise<void>;
+  loginWithGoogle: () => Promise<string | null>;
+  forgotPassword: (email: string) => Promise<string | null>;
+}
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+const auth = getAuth(app);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+// Se tiver scheme no app.json, pode usar: AuthSession.makeRedirectUri({ scheme: 'seuapp' })
+const redirectUri = AuthSession.makeRedirectUri();
 
-    useEffect(() => {
-        const loadUser = async () => {
-            try {
-                const storedUser = await AsyncStorage.getItem('@loggedUser');
-                if (storedUser) setUser(JSON.parse(storedUser));
-            } catch (error) {
-                console.error("Erro ao carregar usuário logado:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        loadUser();
-    }, []);
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    // Validação simples
-    const isValidEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
+  // Google Auth
+  const [_request, response, promptAsync] = Google.useAuthRequest({
+    clientId: '257764412083-ctdqj4lnip13fcdkuoonqhnnek5pdrhn.apps.googleusercontent.com',
+    redirectUri,
+  });
 
-    // Cadastro → salva o usuário em uma lista
-    const register = async (name: string, email: string, password: string) => {
-        if (name.trim().length < 3) return "O nome deve ter pelo menos 3 caracteres.";
-        if (!isValidEmail(email)) return "Email inválido.";
-        if (password.length < 7) return "A senha deve ter pelo menos 7 caracteres.";
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (usr) => {
+      setUser(usr);
+      setLoading(false);
+    });
+    return unsubscribe;
+  }, []);
 
-        const storedUsers = await AsyncStorage.getItem('@users');
-        const users = storedUsers ? JSON.parse(storedUsers) : [];
-
-        // Evita emails duplicados
-        if (users.some((u: User) => u.email === email)) {
-            return "Este email já está cadastrado.";
+  useEffect(() => {
+    if (response?.type === 'success') {
+      (async () => {
+        const { id_token } = response.params;
+        const credential = GoogleAuthProvider.credential(id_token);
+        try {
+          await signInWithCredential(auth, credential);
+        } catch (error) {
+          console.error('Erro ao autenticar com Google:', error);
         }
+      })();
+    }
+  }, [response]);
 
-        const newUser: User = { id: Date.now().toString(), name, email, password };
-        users.push(newUser);
+  const login = async (email: string, password: string): Promise<string | null> => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      return null;
+    } catch (error: any) {
+      console.error('Erro ao logar:', error);
+      return error.message || 'Erro ao logar';
+    }
+  };
 
-        await AsyncStorage.setItem('@users', JSON.stringify(users));
-        await AsyncStorage.setItem('@loggedUser', JSON.stringify(newUser));
+  const register = async (name: string, email: string, password: string): Promise<string | null> => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      if (auth.currentUser) {
+        await updateProfile(auth.currentUser, { displayName: name });
+      }
+      return null;
+    } catch (error: any) {
+      console.error('Erro ao registrar:', error);
+      return error.message || 'Erro ao registrar';
+    }
+  };
 
-        setUser(newUser);
-        return null;
-    };
+  const logout = async (): Promise<void> => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error('Erro ao deslogar:', error);
+    }
+  };
 
-    //  Login → só funciona se já existir cadastro
-    const login = async (email: string, password: string) => {
-        if (!isValidEmail(email)) return "Email inválido.";
-        if (password.length < 7) return "A senha deve ter pelo menos 7 caracteres.";
+  const loginWithGoogle = async (): Promise<string | null> => {
+    try {
+      const result = await promptAsync();
+      if (result.type !== 'success') return 'Login com Google cancelado.';
+      return null;
+    } catch (error: any) {
+      console.error('Erro no login com Google:', error);
+      return error.message || 'Erro no login com Google';
+    }
+  };
 
-        const storedUsers = await AsyncStorage.getItem('@users');
-        const users = storedUsers ? JSON.parse(storedUsers) : [];
+  const forgotPassword = async (email: string): Promise<string | null> => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return null;
+    } catch (error: any) {
+      console.error('Erro ao enviar e-mail de recuperação:', error);
+      return error.message || 'Erro ao enviar e-mail de recuperação';
+    }
+  };
 
-        const existingUser = users.find(
-            (u: User) => u.email === email && u.password === password
-        );
-
-        if (!existingUser) return "Usuário ou senha incorretos.";
-
-        await AsyncStorage.setItem('@loggedUser', JSON.stringify(existingUser));
-        setUser(existingUser);
-        return null;
-    };
-
-    const logout = async () => {
-        setUser(null);
-        await AsyncStorage.removeItem('@loggedUser');
-    };
-
-    return (
-        <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider
+      value={{ user, loading, login, register, logout, loginWithGoogle, forgotPassword }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) throw new Error("useAuth deve ser usado dentro de AuthProvider");
-    return context;
-};
+export const useAuth = () => useContext(AuthContext);

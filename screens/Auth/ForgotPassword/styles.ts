@@ -1,43 +1,44 @@
+// screens/Auth/ForgotPassword/styles.ts
 import { StyleSheet } from 'react-native';
 import { Colors } from '../../../src/constants/theme';
 
 export const styles = StyleSheet.create({
-background: {
+  background: {
     flex: 1,
-},
-container: {
+  },
+  container: {
     flex: 1,
     backgroundColor: 'transparent',
-},
-content: {
+  },
+  content: {
     flex: 1,
     justifyContent: 'center',
     padding: 24,
-},
-card: {
+  },
+  card: {
     backgroundColor: Colors.light.backgroundSecondary,
     borderRadius: 8,
     padding: 32,
-},
-title: {
+  },
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 8,
     color: Colors.light.textPrimary,
-},
-text: {
+  },
+  text: {
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 20,
     color: Colors.light.textSecondary,
-},
-input: {
+  },
+  input: {
     borderWidth: 1,
     borderColor: Colors.light.border,
     borderRadius: 6,
     padding: 12,
     marginBottom: 12,
     fontSize: 16,
-},
+  },
 });

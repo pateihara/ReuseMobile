@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#2563EB"
     },
-    "ios": {
-      "supportsTablet": true
-    },
+    "ios": { "supportsTablet": true },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/icon.png",
@@ -22,8 +20,7 @@
       },
       "edgeToEdgeEnabled": true
     },
-    "web": {
-      "favicon": "./src/assets/favicon.png"
-    }
+    "web": { "favicon": "./src/assets/favicon.png" },
+    "plugins": ["expo-web-browser"]
   }
 }

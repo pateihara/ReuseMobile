@@ -1,3 +1,4 @@
+// src/components/Inputs/SearchInput/index.tsx
 import React from 'react';
 import { View, TextInput, TextInputProps } from 'react-native';
 import { Colors } from '../../../constants/theme';

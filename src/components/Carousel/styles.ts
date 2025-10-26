@@ -1,3 +1,4 @@
+// src/components/Carousel/styles.ts
 import { StyleSheet, Dimensions } from "react-native";
 import { Colors } from "../../constants/theme";
 

@@ -1,3 +1,4 @@
+// src/constants/theme.ts
 import { Platform } from 'react-native';
 
 export const Colors = {

@@ -1,3 +1,4 @@
+// src/components/Inputs/TextInput/styles.ts
 import { StyleSheet } from "react-native";
 import { Colors } from "../../../constants/theme";
 
